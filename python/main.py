@@ -1,6 +1,7 @@
 import os
 import json
 import pickle
+import requests
 from fastapi import FastAPI
 from pydantic import BaseModel
 
@@ -29,6 +30,12 @@ predict_apple = Predict_Apple()
 
 app = FastAPI()
 
+def download_song(url):
+    requests.get("http://gaana99.com/fileDownload/Songs/0/28768.mp3")
+    f = open("movie.mp3","wb")
+    f.write(doc.text)
+    f.close()
+    
 def get_apple_cat(apple_cat):
     file = open(os.path.join('../data/category/', 'apple_cat_pickle'), 'rb')
     data = dict(pickle.load(file))
@@ -57,7 +64,7 @@ async def categorize_podcast(podcast: Podcast):
     text = att.transcribe(podcast.s3_file)
     text_file = att.save_text(text, podcast.s3_file.split('.')[0] + '.pkl')
 
-    # s3.upload_file(os.path.join('../data/text/', text_file), 'ts-transcribe')
+    s3.upload_file(os.path.join('../data/text/', text_file), 'ts-transcribe')
 
     Predict_IAB(text_file)
 
@@ -79,3 +86,8 @@ async def categorize_podcast(podcast: Podcast):
     db_data['Description'] = podcast.description
 
     db.write_category(db_data)
+
+# To do
+# 1. funstion to download audio from link
+# 2. get list of apple categories and their id
+# 3. get list of iab categories and their id
