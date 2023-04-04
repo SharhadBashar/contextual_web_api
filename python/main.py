@@ -1,7 +1,3 @@
-import os
-import json
-import pickle
-import requests
 from pydantic import BaseModel
 from fastapi import FastAPI, status, Response
 
@@ -10,6 +6,7 @@ from database import Database
 from att import Audio_To_Text
 from predict_iab import Predict_IAB
 from predict_apple import Predict_Apple
+from helper import download, get_apple_cat, get_iab_cat, load_topics
 
 class Podcast(BaseModel):
     show_id: int
@@ -29,34 +26,10 @@ predict_apple = Predict_Apple()
 
 app = FastAPI()
 
-def download(url):
-    r = requests.get(url, allow_redirects=True)
-    r = requests.get(r.url, allow_redirects=True)
-    file_name = url.split('/')[-1].split('.mp3')[0]
-    with open('../data/audio/' + file_name + '.mp3', 'wb') as file:
-        file.write(r.content)
-    file.close()
-    return file_name
-    
-def get_apple_cat(apple_cat):
-    file = open(os.path.join('../data/', 'apple_cat.pkl'), 'rb')
-    data = dict(pickle.load(file))
-    return data[apple_cat]
-
-def get_iab_cat(text_file): 
-    file = open(os.path.join('../data/category/', text_file), 'rb')
-    data = dict(pickle.load(file))
-    return 404
-
-def load_topics(text_file):
-    file = open(os.path.join('../data/category/', text_file), 'rb')
-    data = pickle.load(file)
-    return json.dumps(list(data.keys())), json.dumps(data) 
-
 @app.get('/', status_code=status.HTTP_200_OK)
 async def intro():
-    welcome = '''Welcome to Contextual web API.\n
-                 Please go to home_url/categorize/ with the following body to get started:
+    welcome = '''Welcome to Contextual web API.
+                 Please go to "home_url/categorize/" with the following body to get started:
                  show_id: int
                  episode_id: int
                  publisher_id: int
@@ -65,8 +38,8 @@ async def intro():
                  description: str or ''
                  keywords: list or ''
                  url: str
-                 Please go to home_url/docs/ to see all the different API calls and information
-                 Please go to home_url/status/ to see API status
+                 Please go to "home_url/docs/" to see all the different API calls and information
+                 Please go to "home_url/status/" to see API status
               '''
     return (welcome)
 
@@ -106,8 +79,3 @@ async def categorize_podcast(podcast: Podcast):
     db_data['Description'] = podcast.description
 
     db.write_category(db_data)
-
-# To do
-# 1. function to download audio from link
-# 2. get list of apple categories and their id
-# 3. get list of iab categories and their id

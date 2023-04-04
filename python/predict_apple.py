@@ -13,7 +13,7 @@ class Predict_Apple:
     def __init__(self, cat_map_path = None, model_filename = None, data_path = None, model_path = None):
         self.cat_map_path = cat_map_path if cat_map_path else 'cat_mapping_en.pkl'
         self.model_filename = model_path if model_path else 'model.pkl'
-        self.data_path = data_path if data_path else '../data/'
+        self.data_path = data_path if data_path else '../data/static_category/'
         self.model_path = model_path if model_path else '../model/'
 
         self.category_dict = pickle.load(

@@ -14,7 +14,7 @@ from sentence_transformers import SentenceTransformer, util
 
 class Predict_IAB:
 	def __init__(self, text_file, category = None, data_path = None, text_data_path = None, category_path = None, model_name = None):
-		self.data_path = data_path if data_path else '../data/'
+		self.data_path = data_path if data_path else '../data/static_category/'
 		self.text_data_path = text_data_path if text_data_path else '../data/text/'
 		self.category_path = category_path if category_path else '../data/category'
 		self.category = 'ryan_category.pkl'
