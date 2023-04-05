@@ -3,24 +3,32 @@ import json
 import pickle
 import requests
 
-def download(url):
+def download(episode_id, url):
     r = requests.get(url, allow_redirects=True)
     r = requests.get(r.url, allow_redirects=True)
-    file_name = url.split('/')[-1].split('.mp3')[0]
-    with open('../data/audio/' + file_name + '.mp3', 'wb') as file:
+    with open('../data/audio/' + episode_id + '.mp3', 'wb') as file:
         file.write(r.content)
     file.close()
-    return file_name
+    return episode_id + '.mp3'
     
 def get_apple_cat(apple_cat):
     file = open(os.path.join('../data/static_category/', 'apple_cat.pkl'), 'rb')
     data = dict(pickle.load(file))
     return data[apple_cat]
 
-def get_iab_cat(text_file): 
+def get_iab_cat(text_file):
+    iab_cat = -1 
+    highest_score = 0
     file = open(os.path.join('../data/category/', text_file), 'rb')
     data = dict(pickle.load(file))
-    return 404
+    for key, val in data.items():
+        if (val['score'] < 0.5):
+            continue
+        score = val['score'] * val['count']
+        if (score > highest_score):
+            iab_cat = val['id']
+            highest_score = score
+    return iab_cat
 
 def load_topics(text_file):
     file = open(os.path.join('../data/category/', text_file), 'rb')

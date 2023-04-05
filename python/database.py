@@ -3,6 +3,7 @@ import pickle
 # import pyodbc
 import pandas as pd
 from tqdm import tqdm
+from pprint import pprint
 from datetime import datetime
 
 class Database:
@@ -35,7 +36,7 @@ class Database:
                      ContentType, ContentUrl, TransLink,
                      Topics, TopicsMatch, Description)
                    VALUES 
-                    ({}, {}, {}, {}, {},
+                    ('{}', '{}', {}, {}, {},
                     'True', '{}', '{}', 
                     '{}', '{}', '{}',
                     '{}', '{}', '{}', 
@@ -59,7 +60,7 @@ class Database:
                     data['TopicsMatch'],
                     data['Description']
                 )
-        print(query)
+        pprint(query)
         # cursor = conn.cursor()
         # cursor.execute(query)
         # conn.commit()
