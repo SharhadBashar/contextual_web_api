@@ -16,6 +16,7 @@ class Podcast(BaseModel):
     publisher_id: int
     podcast_name: str
     episode_name: str
+    content_type: str
     description: str 
     keywords: list 
     content_url: str
@@ -79,7 +80,7 @@ async def categorize_podcast(podcast: Podcast):
     db_data['PodcastName'] = podcast.podcast_name
     db_data['EpisodeName'] = podcast.episode_name
     db_data['Keywords'] = podcast.keywords
-    db_data['ContentType'] = 'audio'
+    db_data['ContentType'] = podcast.content_type
     db_data['ContentUrl'] = podcast.content_url
     db_data['TransLink'] = 'https://s3.console.aws.amazon.com/s3/buckets/ts-transcription?region=us-east-1&prefix=' + text_file
     topics, topics_match = load_topics(text_file)
@@ -88,4 +89,12 @@ async def categorize_podcast(podcast: Podcast):
     db_data['Description'] = podcast.description
 
     db.write_category(db_data)
+
+    if os.path.isfile(os.path.join('../data/audio/', file_name)):
+        os.remove(os.path.join('../data/audio/', file_name))
+    if os.path.isfile(os.path.join('../data/text/', text_file)):
+        os.remove(os.path.join('../data/text/', text_file))
+    if os.path.isfile(os.path.join('../data/category/', text_file)):
+        os.remove(os.path.join('../data/category/', text_file))
+
     print('total time taken:', time.time() - start)
