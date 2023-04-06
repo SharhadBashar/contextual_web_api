@@ -55,17 +55,16 @@ async def categorize_podcast(podcast: Podcast):
     apple_cat = predict_apple.predict(predict_apple.clean_data(data))
     print('apple cat:', time.time() - start)
 
-    # temp = time.time()
-    # # s3.download_file(podcast.s3_file, podcast.s3_bucket, '../data/audio/')
+    temp = time.time()
     file_name = download(podcast.episode_id, podcast.content_url)
-    # print('download:', time.time() - temp)
+    print('download:', time.time() - temp)
 
     temp = time.time()
     text = att.transcribe(file_name)
     text_file = att.save_text(text, file_name.split('.')[0] + '.pkl')
     print('transcribe and saving:', time.time() - temp)
 
-    # s3.upload_file(os.path.join('../data/text/', text_file), 'ts-transcription')
+    s3.upload_file(os.path.join('../data/text/', text_file), 'ts-transcription')
 
     temp = time.time()
     Predict_IAB(text_file)
