@@ -21,7 +21,6 @@ class Podcast(BaseModel):
     keywords: list 
     content_url: str
 
-
 s3 = S3() 
 db = Database()
 att = Audio_To_Text()  

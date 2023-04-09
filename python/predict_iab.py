@@ -1,6 +1,7 @@
 import os
 import pickle
 from tqdm import tqdm
+import torch
 from pprint import pprint
 from cleantext import clean
 from collections import Counter
@@ -55,32 +56,64 @@ class Predict_IAB:
 	def get_recurring_n(self, text, n = 5):
 		return Counter(text.split()).most_common(n)
 
+	# def score_mapping(self, recurring_n_words, category_list, model_name):
+	# 	model = SentenceTransformer(model_name)
+	# 	mapping = {}
+	# 	for word, count in tqdm(recurring_n_words):
+	# 		word = word.lower()
+	# 		mapping[word] = {
+	# 		    'id': -1,
+	# 		    'data': word,
+	# 		    'table': '',
+	# 		    'score': 0,
+	# 		    'count': count
+	# 		}
+	# 		embedding_word = model.encode(word, convert_to_tensor = True)
+	# 		for id, category in category_list:
+	# 			category = category.lower()
+	# 			embedding_category = model.encode(category, convert_to_tensor = True)
+	# 			cosine_score = round((util.cos_sim(embedding_word, embedding_category)).item(), 2)
+	# 			if (cosine_score > mapping[word]['score']):
+	# 				mapping[word]['id'] = id
+	# 				mapping[word]['score'] = cosine_score
+	# 				mapping[word]['table'] = category
+	# 	return mapping
+
 	def score_mapping(self, recurring_n_words, category_list, model_name):
+		mapping = dict()
 		model = SentenceTransformer(model_name)
-		mapping = {}
-		for word, count in tqdm(recurring_n_words):
-			word = word.lower()
-			mapping[word] = {
-			    'id': -1,
-			    'data': word,
-			    'table': '',
-			    'score': 0,
-			    'count': count
-			}
+		embs_word = torch.zeros(len(recurring_n_words), 768)
+		embs_category = torch.zeros(len(category_list), 768)
+
+		for i, word in enumerate(tqdm(recurring_n_words)):
+			word = word[0].lower()
 			embedding_word = model.encode(word, convert_to_tensor = True)
-			for id, category in category_list:
-				category = category.lower()
+			embs_word[i] = embedding_word
+
+		if (os.path.isfile(os.path.join(self.data_path, 'category_list_embedding.pkl'))):
+			embs_category = pickle.load(open(os.path.join(self.data_path, 'category_list_embedding.pkl'),'rb'))
+		else:
+			for i, category in enumerate(tqdm(category_list)):
+				category = category[1].lower()
 				embedding_category = model.encode(category, convert_to_tensor = True)
-				cosine_score = round((util.cos_sim(embedding_word, embedding_category)).item(), 2)
-				if (cosine_score > mapping[word]['score']):
-					mapping[word]['id'] = id
-					mapping[word]['score'] = cosine_score
-					mapping[word]['table'] = category
+				embs_category[i] = embedding_category
+
+			with open(os.path.join(self.data_path, 'category_list_embedding.pkl'), 'wb') as file: 
+				pickle.dump(embs_category, file)
+
+		scores, indices = torch.max(util.cos_sim(embs_word, embs_category), dim = -1)
+
+		for i, idx in enumerate(indices):
+			mapping[recurring_n_words[i][0]] = {
+				'id': category_list[idx][0],
+	 		    'data': recurring_n_words[i][0],
+	 		    'table': category_list[idx][1],
+	 		    'score': scores[i].item(),
+	 		    'count': recurring_n_words[i][1]
+			}
 		return mapping
 
 	def save_mapping(self, mapping, mapping_file, category_path):
 		with open(os.path.join(category_path, mapping_file), 'wb') as file: 
 			pickle.dump(mapping, file) 
 		print('Category mapping saved at:', os.path.join(category_path, mapping_file))
-		
-
