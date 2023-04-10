@@ -19,7 +19,12 @@ class Predict_IAB:
 		self.text_data_path = text_data_path if text_data_path else '../data/text/'
 		self.category_path = category_path if category_path else '../data/category'
 		self.category = 'ryan_category.pkl'
-		self.model_name = model_name if model_name else 'all-mpnet-base-v2'
+		self.models = [
+			'all-mpnet-base-v2', #768
+			'bert-base-nli-mean-tokens', #768
+			'bert-large-uncased' #1024
+		]
+		self.model_name = model_name if model_name else self.models[0]
 
 		category_list = pickle.load(open(os.path.join(self.data_path, self.category), 'rb'))
 		self.get_custom_stopwords()
@@ -55,29 +60,6 @@ class Predict_IAB:
 
 	def get_recurring_n(self, text, n = 5):
 		return Counter(text.split()).most_common(n)
-
-	# def score_mapping(self, recurring_n_words, category_list, model_name):
-	# 	model = SentenceTransformer(model_name)
-	# 	mapping = {}
-	# 	for word, count in tqdm(recurring_n_words):
-	# 		word = word.lower()
-	# 		mapping[word] = {
-	# 		    'id': -1,
-	# 		    'data': word,
-	# 		    'table': '',
-	# 		    'score': 0,
-	# 		    'count': count
-	# 		}
-	# 		embedding_word = model.encode(word, convert_to_tensor = True)
-	# 		for id, category in category_list:
-	# 			category = category.lower()
-	# 			embedding_category = model.encode(category, convert_to_tensor = True)
-	# 			cosine_score = round((util.cos_sim(embedding_word, embedding_category)).item(), 2)
-	# 			if (cosine_score > mapping[word]['score']):
-	# 				mapping[word]['id'] = id
-	# 				mapping[word]['score'] = cosine_score
-	# 				mapping[word]['table'] = category
-	# 	return mapping
 
 	def score_mapping(self, recurring_n_words, category_list, model_name):
 		mapping = dict()
