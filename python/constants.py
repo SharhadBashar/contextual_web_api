@@ -51,5 +51,32 @@ WELCOME = '''Welcome to Contextual web API.
                  Please go to "home_url/status/" to see API status
               '''
 
-S3_TRANSCRIBE = {'name': 'ts-transcription',
-                 'link': 'https://s3.console.aws.amazon.com/s3/buckets/ts-transcription?region=us-east-1&prefix='}
+S3_TRANSCRIBE = {
+    'name': 'ts-transcription',
+    'link': 'https://s3.console.aws.amazon.com/s3/buckets/ts-transcription?region=us-east-1&prefix='
+}
+S3_CONTEXTUAL_WEB_API = {
+    'name': 'ts-contextual-web-api',
+    'link': 'https://s3.console.aws.amazon.com/s3/buckets/ts-contextual-web-api?region=us-east-1'
+}
+SETUP = {
+    'directory': [
+        PATH_DATA,
+        PATH_MODEL,
+        PATH_CONFIG,
+        PATH_DATA_AUDIO,
+        PATH_DATA_CATEGORY,
+        PATH_DATA_STATIC_CATEGORY,
+        PATH_DATA_TEXT    
+    ],
+    'download': [
+        [STOP_WORDS, './'],
+        # [DB_CONFIG, PATH_CONFIG],
+        [APPLE_CAT, PATH_DATA_STATIC_CATEGORY],
+        [IAB_CAT, PATH_DATA_STATIC_CATEGORY],
+        [APPLE_CAT_MAP_EN, PATH_DATA_STATIC_CATEGORY],
+        [IAB_CAT_EMB, PATH_DATA_STATIC_CATEGORY],
+        [RYAN_CAT, PATH_DATA_STATIC_CATEGORY],
+        [MODEL, PATH_MODEL],
+    ]
+}
