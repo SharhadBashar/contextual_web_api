@@ -1,26 +1,22 @@
 import os
 import pickle
-import pandas as pd
 from cleantext import clean
 
 import nltk
 from nltk.corpus import stopwords
 nltk.download("stopwords")
-
 from nltk.stem import WordNetLemmatizer
 
-class Predict_Apple:
-    def __init__(self, cat_map_path = None, model_filename = None, data_path = None, model_path = None):
-        self.cat_map_path = cat_map_path if cat_map_path else 'cat_mapping_en.pkl'
-        self.model_filename = model_path if model_path else 'model.pkl'
-        self.data_path = data_path if data_path else '../data/static_category/'
-        self.model_path = model_path if model_path else '../model/'
+from constants import *
 
-        self.category_dict = pickle.load(
-            open(
-                os.path.join(self.data_path, self.cat_map_path), 'rb'
-                )
-        )
+class Predict_Apple:
+    def __init__(self, apple_cat_map = None, model_filename = None, static_cat_path = None, model_path = None):
+        self.apple_cat_map = apple_cat_map if apple_cat_map else APPLE_CAT_MAP_EN
+        self.static_cat_path = static_cat_path if static_cat_path else PATH_DATA_STATIC_CATEGORY
+        self.model_path = model_path if model_path else PATH_MODEL
+        self.model_filename = model_filename if model_filename else MODEL
+
+        self.category_dict = pickle.load(open(os.path.join(self.static_cat_path, self.apple_cat_map), 'rb'))
         self.model = pickle.load(open(os.path.join(self.model_path, self.model_filename), 'rb'))
         
     def clean_data(self, data):

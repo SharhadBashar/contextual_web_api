@@ -1,38 +1,36 @@
 import os
+import torch
 import pickle
 from tqdm import tqdm
-import torch
-from pprint import pprint
 from cleantext import clean
 from collections import Counter
 
 import nltk
 from nltk.corpus import stopwords
 nltk.download('stopwords')
-
 from nltk.stem import WordNetLemmatizer
 from sentence_transformers import SentenceTransformer, util
 
-class Predict_IAB:
-	def __init__(self, text_file, category = None, data_path = None, text_data_path = None, category_path = None, model_name = None):
-		self.data_path = data_path if data_path else '../data/static_category/'
-		self.text_data_path = text_data_path if text_data_path else '../data/text/'
-		self.category_path = category_path if category_path else '../data/category'
-		self.category = 'ryan_category.pkl'
-		self.models = [
-			'all-mpnet-base-v2', #768
-			'bert-base-nli-mean-tokens', #768
-			'bert-large-uncased' #1024
-		]
-		self.model_name = model_name if model_name else self.models[0]
+from constants import *
 
-		category_list = pickle.load(open(os.path.join(self.data_path, self.category), 'rb'))
+class Predict_IAB:
+	def __init__(self, text_file, 
+	      ryan_category = None, 
+		  static_data_path = None, 
+		  text_data_path = None, 
+		  category_path = None,
+		  model_name = None):
+		self.static_data_path = static_data_path if static_data_path else PATH_DATA_STATIC_CATEGORY
+		self.text_data_path = text_data_path if text_data_path else PATH_DATA_TEXT
+		self.category_path = category_path if category_path else PATH_DATA_CATEGORY
+		self.ryan_category = ryan_category if ryan_category else RYAN_CAT
+		self.model_name = model_name if model_name else IAB_MODELS[0]
+
+		category_list = pickle.load(open(os.path.join(self.static_data_path, self.ryan_category), 'rb'))
 		self.get_custom_stopwords()
 		text = self.clean_text(pickle.load(open(os.path.join(self.text_data_path, text_file), 'rb')))
 
-		recurring_n_words = self.get_recurring_n(text, n = 5)
-		# print('Top 5 words:')
-		# pprint(recurring_n_words)
+		recurring_n_words = self.get_recurring_n(text, n = RECURRING_N)
 		mapping = self.score_mapping(recurring_n_words, category_list, self.model_name)
 		self.save_mapping(mapping, text_file, self.category_path)
 
@@ -58,30 +56,29 @@ class Predict_IAB:
 		text = ' '.join([lemmatizer.lemmatize(word) for word in text.split()])
 		return text
 
-	def get_recurring_n(self, text, n = 5):
+	def get_recurring_n(self, text, n = RECURRING_N):
 		return Counter(text.split()).most_common(n)
 
 	def score_mapping(self, recurring_n_words, category_list, model_name):
 		mapping = dict()
 		model = SentenceTransformer(model_name)
-		embs_word = torch.zeros(len(recurring_n_words), 768)
-		embs_category = torch.zeros(len(category_list), 768)
+		embs_word = torch.zeros(len(recurring_n_words), IAB_MODELS_PRAMS[model_name])
+		embs_category = torch.zeros(len(category_list), IAB_MODELS_PRAMS[model_name])
 
 		for i, word in enumerate(tqdm(recurring_n_words)):
 			word = word[0].lower()
 			embedding_word = model.encode(word, convert_to_tensor = True)
 			embs_word[i] = embedding_word
 
-		if (os.path.isfile(os.path.join(self.data_path, 'category_list_embedding.pkl'))):
-			embs_category = pickle.load(open(os.path.join(self.data_path, 'category_list_embedding.pkl'),'rb'))
+		if (os.path.isfile(os.path.join(self.static_data_path, IAB_CAT_EMB))):
+			embs_category = torch.load(os.path.join(self.static_data_path, IAB_CAT_EMB))
 		else:
 			for i, category in enumerate(tqdm(category_list)):
 				category = category[1].lower()
 				embedding_category = model.encode(category, convert_to_tensor = True)
 				embs_category[i] = embedding_category
-
-			with open(os.path.join(self.data_path, 'category_list_embedding.pkl'), 'wb') as file: 
-				pickle.dump(embs_category, file)
+			with open(os.path.join(self.static_data_path, IAB_CAT_EMB), 'wb') as file: 
+				torch.save(embs_category, file)
 
 		scores, indices = torch.max(util.cos_sim(embs_word, embs_category), dim = -1)
 

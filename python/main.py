@@ -1,14 +1,15 @@
 import os
 import time
 from pydantic import BaseModel
-from fastapi import FastAPI, status, Response
+from fastapi import FastAPI, status
 
 from s3 import S3
+from constants import *
 from database import Database
 from att import Audio_To_Text
 from predict_iab import Predict_IAB
 from predict_apple import Predict_Apple
-from helper import download, get_apple_cat, get_iab_cat, load_topics
+from helper import download, get_apple_cat, get_iab_cat, load_topics, del_files
 
 class Podcast(BaseModel):
     show_id: str
@@ -28,24 +29,11 @@ predict_apple = Predict_Apple()
 
 app = FastAPI()
 
-@app.get('/', status_code=status.HTTP_200_OK)
+@app.get('/', status_code = status.HTTP_200_OK)
 async def intro():
-    welcome = '''Welcome to Contextual web API.
-                 Please go to "home_url/categorize/" with the following body to get started:
-                 show_id: int
-                 episode_id: int
-                 publisher_id: int
-                 podcast_name: str
-                 episode_name: str
-                 description: str or ''
-                 keywords: list or ''
-                 content_url: str
-                 Please go to "home_url/docs/" to see all the different API calls and information
-                 Please go to "home_url/status/" to see API status
-              '''
-    return (welcome)
+    return WELCOME
 
-@app.post('/categorize/', status_code=status.HTTP_201_CREATED)
+@app.post('/categorize/', status_code = status.HTTP_201_CREATED)
 async def categorize_podcast(podcast: Podcast):
     start = time.time()
     data = podcast.podcast_name + ' ' + \
@@ -61,10 +49,10 @@ async def categorize_podcast(podcast: Podcast):
 
     temp = time.time()
     text = att.transcribe(file_name)
-    text_file = att.save_text(text, file_name.split('.')[0] + '.pkl')
+    text_file = att.save_text(text, file_name.split('.')[0] + PKL)
     print('transcribe and saving:', time.time() - temp)
 
-    s3.upload_file(os.path.join('../data/text/', text_file), 'ts-transcription')
+    s3.upload_file(os.path.join(PATH_DATA_TEXT, text_file), S3_TRANSCRIBE['name'])
 
     temp = time.time()
     Predict_IAB(text_file)
@@ -81,7 +69,7 @@ async def categorize_podcast(podcast: Podcast):
     db_data['Keywords'] = podcast.keywords
     db_data['ContentType'] = podcast.content_type
     db_data['ContentUrl'] = podcast.content_url
-    db_data['TransLink'] = 'https://s3.console.aws.amazon.com/s3/buckets/ts-transcription?region=us-east-1&prefix=' + text_file
+    db_data['TransLink'] = S3_TRANSCRIBE['link'] + text_file
     topics, topics_match = load_topics(text_file)
     db_data['Topics'] = topics
     db_data['TopicsMatch'] = topics_match
@@ -89,11 +77,6 @@ async def categorize_podcast(podcast: Podcast):
 
     db.write_category(db_data)
 
-    if os.path.isfile(os.path.join('../data/audio/', file_name)):
-        os.remove(os.path.join('../data/audio/', file_name))
-    if os.path.isfile(os.path.join('../data/text/', text_file)):
-        os.remove(os.path.join('../data/text/', text_file))
-    if os.path.isfile(os.path.join('../data/category/', text_file)):
-        os.remove(os.path.join('../data/category/', text_file))
+    del_files(file_name, text_file)
 
     print('total time taken:', time.time() - start)

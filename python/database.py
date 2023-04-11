@@ -1,3 +1,4 @@
+import os
 import json
 import pickle
 # import pyodbc
@@ -6,9 +7,11 @@ from tqdm import tqdm
 from pprint import pprint
 from datetime import datetime
 
+from constants import *
+
 class Database:
     def __init__(self, env = 'staging'):
-        # with open('../config/database.json') as file:
+        # with open(os.path.join(PATH_CONFIG, DB_CONFIG)) as file:
         #     database_info = json.load(file)
         # self.conn_common = self._database_conn(database_info[env], 'common')
         # self.conn_dmp = self._database_conn(database_info[env], 'dmp')
