@@ -23,7 +23,7 @@ class Podcast(BaseModel):
     content_url: str
 
 s3 = S3() 
-db = Database()
+db = Database(env = 'prod')
 att = Audio_To_Text()  
 predict_apple = Predict_Apple()
 

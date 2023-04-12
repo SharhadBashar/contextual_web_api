@@ -1,7 +1,7 @@
 import os
 import json
 import pickle
-# import pyodbc
+import pyodbc
 import pandas as pd
 from tqdm import tqdm
 from pprint import pprint
@@ -11,11 +11,10 @@ from constants import *
 
 class Database:
     def __init__(self, env = 'staging'):
-        # with open(os.path.join(PATH_CONFIG, DB_CONFIG)) as file:
-        #     database_info = json.load(file)
-        # self.conn_common = self._database_conn(database_info[env], 'common')
-        # self.conn_dmp = self._database_conn(database_info[env], 'dmp')
-        None
+        with open(os.path.join(PATH_CONFIG, DB_CONFIG)) as file:
+            database_info = json.load(file)
+        self.conn_common = self._database_conn(database_info[env], 'common')
+        self.conn_dmp = self._database_conn(database_info[env], 'dmp')
         
     def _database_conn(self, database_info, database):
         return 'DRIVER={};\
@@ -30,7 +29,7 @@ class Database:
         )
     
     def write_category(self, data):
-        # conn = pyodbc.connect(self.conn_dmp)
+        conn = pyodbc.connect(self.conn_dmp)
         query = """INSERT INTO 
                     dbo.ContextualCategories 
                     (ShowId, EpisodeId, PublisherId, AppleContentFormatId, IabV2ContentFormatId, 
@@ -63,8 +62,7 @@ class Database:
                     data['TopicsMatch'],
                     data['Description']
                 )
-        pprint(query)
-        # cursor = conn.cursor()
-        # cursor.execute(query)
-        # conn.commit()
-        # cursor.close()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        conn.commit()
+        cursor.close()

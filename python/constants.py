@@ -71,7 +71,7 @@ SETUP = {
     ],
     'download': [
         [STOP_WORDS, './'],
-        # [DB_CONFIG, PATH_CONFIG],
+        [DB_CONFIG, PATH_CONFIG],
         [APPLE_CAT, PATH_DATA_STATIC_CATEGORY],
         [IAB_CAT, PATH_DATA_STATIC_CATEGORY],
         [APPLE_CAT_MAP_EN, PATH_DATA_STATIC_CATEGORY],

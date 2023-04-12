@@ -6,7 +6,10 @@ from constants import *
 
 print('Creating directories...')
 for directory in tqdm(SETUP['directory']):
-    os.mkdir(directory)
+    try:
+        os.mkdir(directory)
+    except:
+        None
 print('Directories created')
 
 print('Downloading required files...')
