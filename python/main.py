@@ -1,5 +1,4 @@
 import os
-import time
 from pydantic import BaseModel
 from fastapi import FastAPI, status
 
@@ -35,28 +34,20 @@ async def intro():
 
 @app.post('/categorize/', status_code = status.HTTP_201_CREATED)
 async def categorize_podcast(podcast: Podcast):
-    start = time.time()
     data = podcast.podcast_name + ' ' + \
             podcast.episode_name + ' ' + \
             podcast.description + ' ' + \
             ' '.join(podcast.keywords)
     apple_cat = predict_apple.predict(predict_apple.clean_data(data))
-    print('apple cat:', time.time() - start)
 
-    temp = time.time()
     file_name = download(podcast.episode_id, podcast.content_url)
-    print('download:', time.time() - temp)
 
-    temp = time.time()
     text = att.transcribe(file_name)
     text_file = att.save_text(text, file_name.split('.')[0] + PKL)
-    print('transcribe and saving:', time.time() - temp)
 
     s3.upload_file(os.path.join(PATH_DATA_TEXT, text_file), S3_TRANSCRIBE['name'])
 
-    temp = time.time()
     Predict_IAB(text_file)
-    print('iab cat:', time.time() - temp)
 
     db_data = {} 
     db_data['ShowId'] = podcast.show_id
@@ -78,5 +69,3 @@ async def categorize_podcast(podcast: Podcast):
     db.write_category(db_data)
 
     del_files(file_name, text_file)
-
-    print('total time taken:', time.time() - start)
