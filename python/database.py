@@ -1,10 +1,6 @@
 import os
 import json
-import pickle
 import pyodbc
-import pandas as pd
-from tqdm import tqdm
-from pprint import pprint
 from datetime import datetime
 
 from constants import *
