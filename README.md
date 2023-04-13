@@ -1,9 +1,10 @@
 # Contextual Web API
 
 Author: Sharhad Bashar<br>
-Language: Python<br>
-Version: 3.9.16<br>
+Language: `Python`<br>
+Version: `v3.9.16`<br>
 
+To install all the required libraries, run `pip install -r requirements.txt`<br>
 On first run, setup directories and download required files.<br>
 To do so run this command from the python directory: `python setup.py`<br>
 
