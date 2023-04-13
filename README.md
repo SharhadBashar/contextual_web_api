@@ -1,11 +1,11 @@
 # Contextual Web API
 
+Author: Sharhad Bashar<br>
 Language: Python<br>
 Version: 3.9.16<br>
-Author: Sharhad Bashar<br>
 
-First setup directories and download required files.<br>
-To do so run the command `python setup.py`<br>
+On first run, setup directories and download required files.<br>
+To do so run this command from the python directory: `python setup.py`<br>
 
 To Run the API:
 1. uvicorn main:app --reload 
