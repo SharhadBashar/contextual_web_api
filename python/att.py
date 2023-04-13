@@ -20,10 +20,16 @@ class Audio_To_Text:
 		self.model = whisper.load_model(model_type)
 
 	def transcribe(self, audio_file):
-		return self.model.transcribe(os.path.join(self.audio_data_path, audio_file))
+		try:
+			return self.model.transcribe(os.path.join(self.audio_data_path, audio_file))
+		except:
+			return ERROR_TRANSCRIBE
 
 	def save_text(self, text, text_file):
-		with open(os.path.join(self.text_data_path, text_file), 'wb') as file: 
-			pickle.dump(text, file)
-		print('Transcribed text saved at:', os.path.join(self.text_data_path, text_file))
-		return text_file
+		try:
+			with open(os.path.join(self.text_data_path, text_file), 'wb') as file: 
+				pickle.dump(text, file)
+			print('Transcribed text saved at:', os.path.join(self.text_data_path, text_file))
+			return text_file
+		except:
+			ERROR_SAVE_TEXT

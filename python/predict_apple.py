@@ -31,7 +31,12 @@ class Predict_Apple:
                            punct = True
                     )
         data = ' '.join([lemmatizer.lemmatize(word) for word in data.split()])
+        if (data is None):
+            return ERROR_CLEAN_DATA
         return data
     
     def predict(self, inp):
-        return self.category_dict[self.model.predict([inp])[0]]
+        try:
+            return self.category_dict[self.model.predict([inp])[0]]
+        except:
+            return ERROR_PREDICT

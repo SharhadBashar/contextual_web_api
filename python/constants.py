@@ -80,3 +80,21 @@ SETUP = {
         [MODEL, PATH_MODEL],
     ]
 }
+
+# Error Codes:
+API_RUNNING = 'API is up and running. WOOHOO!!!'
+API_SUCCESS = 'Podcast categorized successfully'
+ERROR_PODCAST_NAME = 'Error -> Podcast name missing'
+ERROR_EPISODE_NAME = 'Error -> Episode name missing'
+ERROR_CLEAN_DATA = 'Error -> class: predict_apple; function: clean_data'
+ERROR_PREDICT = 'Error -> class: predict_apple; function: predict'
+ERROR_DOWNLOAD = 'Error -> unable to download podcast'
+ERROR_TRANSCRIBE = 'Error -> class: att; function: transcribe'
+ERROR_SAVE_TEXT = 'Error -> class: att; function: save_text'
+ERROR_S3_SAVE = 'Error -> unable to upload transcribed test to S3 bucket'
+ERROR_IAB_PREDICT = 'Error -> class: predict_iab'
+ERROR_GET_APPLE_CAT = 'Error -> class: helper; function: get_apple_cat'
+ERROR_GET_IAB_CAT = 'Error -> class: helper; function: get_iab_cat'
+ERROR_TOPICS = 'Error -> class: helper; function: load_topics'
+ERROR_DELETE_FILES = 'Error -> class: helper; function: del_files'
+ERROR_DB_WRITE = 'Error -> unable to write to database'
