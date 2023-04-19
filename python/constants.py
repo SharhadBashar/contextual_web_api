@@ -6,6 +6,7 @@ RECURRING_N = 5
 PATH_DATA = '../data/'
 PATH_MODEL = '../model/'
 PATH_CONFIG = '../config/'
+PATH_LOG = '../log/'
 
 PATH_DATA_AUDIO = os.path.join(PATH_DATA, 'audio/')
 PATH_DATA_CATEGORY = os.path.join(PATH_DATA, 'category/')
@@ -21,12 +22,14 @@ IAB_CAT_EMB = 'iab_cat_embedding.t'
 RYAN_CAT = 'ryan_category_id.pkl'
 DB_CONFIG = 'database.json'
 MODEL = 'model.pkl'
+LOG_FILENAME = 'logging.log'
 
 # File formats
 MP3 = '.mp3'
 WAV = '.wav'
 PKL = '.pkl'
 TXT = '.txt'
+LOG = '.log'
 
 # Models
 WHISPER_MODEL_TYPES = ['tiny.en', 'tiny', 'small', 'base', 'medium', 'large']
@@ -51,6 +54,8 @@ WELCOME = '''Welcome to Contextual web API.
                  Please go to "home_url/status/" to see API status
               '''
 
+LOG_SETUP_MESSAGE = 'Contextual web API log file \n'
+
 S3_TRANSCRIBE = {
     'name': 'ts-transcription',
     'link': 'https://s3.console.aws.amazon.com/s3/buckets/ts-transcription?region=us-east-1&prefix='
@@ -67,7 +72,8 @@ SETUP = {
         PATH_DATA_AUDIO,
         PATH_DATA_CATEGORY,
         PATH_DATA_STATIC_CATEGORY,
-        PATH_DATA_TEXT    
+        PATH_DATA_TEXT,
+        PATH_LOG 
     ],
     'download': [
         [STOP_WORDS, './'],

@@ -12,6 +12,10 @@ for directory in tqdm(SETUP['directory']):
         None
 print('Directories created')
 
+f = open(os.path.join(PATH_LOG, LOG_FILENAME), 'w')
+f.write(LOG_SETUP_MESSAGE)
+f.close()
+
 print('Downloading required files...')
 s3 = S3()
 for file, download_path in tqdm(SETUP['download']):
