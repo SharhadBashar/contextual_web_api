@@ -1,12 +1,12 @@
 import os
 from pydantic import BaseModel
 from fastapi import FastAPI, status
-from fastapi.responses import JSONResponse
 
 from s3 import S3
 from constants import *
-from database import Database
+from logger import Logger
 from att import Audio_To_Text
+from database import Database
 from predict_iab import Predict_IAB
 from predict_apple import Predict_Apple
 from helper import download, get_apple_cat, get_iab_cat, load_topics, del_files, json_response_message
@@ -39,13 +39,13 @@ async def intro():
 
 @app.post('/categorize/', status_code = status.HTTP_201_CREATED)
 async def categorize_podcast(podcast: Podcast):
-    print('Recieved request for podcast:', podcast.show_id)
+    Logger(200, PODCAST_REQUEST.format(podcast.episode_id))
 
     if (podcast.podcast_name is None or podcast.podcast_name == ''):
-        return json_response_message(404, ERROR_PODCAST_NAME)
+        return json_response_message(404, ERROR_PODCAST_NAME.format(podcast.episode_id))
 
     if (podcast.episode_name is None or podcast.episode_name == ''):
-        return json_response_message(404, ERROR_EPISODE_NAME)
+        return json_response_message(404, ERROR_EPISODE_NAME.format(podcast.episode_id))
                               
     podcast.description = '' if podcast.description is None else podcast.description
     podcast.keywords = [] if podcast.keywords is None else podcast.keywords
@@ -57,35 +57,35 @@ async def categorize_podcast(podcast: Podcast):
     
     apple_cat_cleaned_data = predict_apple.clean_data(data)
     if (apple_cat_cleaned_data == ERROR_CLEAN_DATA):
-        return json_response_message(422, ERROR_CLEAN_DATA)
+        return json_response_message(422, ERROR_CLEAN_DATA.format(podcast.episode_id))
 
     apple_cat = predict_apple.predict(apple_cat_cleaned_data)
     if (apple_cat == ERROR_PREDICT):
-        return json_response_message(422, ERROR_PREDICT)
+        return json_response_message(422, ERROR_PREDICT.format(podcast.episode_id))
 
 
     file_name = download(podcast.episode_id, podcast.content_url)
     if (file_name == ERROR_DOWNLOAD):
-        return json_response_message(422, ERROR_DOWNLOAD)
+        return json_response_message(422, ERROR_DOWNLOAD.format(podcast.episode_id))
 
 
     text = att.transcribe(file_name)
     if (text == ERROR_TRANSCRIBE):
-        return json_response_message(422, ERROR_DOWNLOAD)
+        return json_response_message(422, ERROR_DOWNLOAD.format(podcast.episode_id))
     
     text_file = att.save_text(text, file_name.split('.')[0] + PKL)
     if (text_file == ERROR_SAVE_TEXT):
-        return json_response_message(422, ERROR_SAVE_TEXT)
+        return json_response_message(422, ERROR_SAVE_TEXT.format(podcast.episode_id))
 
     try:
         s3.upload_file(os.path.join(PATH_DATA_TEXT, text_file), S3_TRANSCRIBE['name'])
     except:
-        return json_response_message(422, ERROR_S3_SAVE)
+        return json_response_message(422, ERROR_S3_SAVE.format(podcast.episode_id))
 
     try:
         Predict_IAB(text_file)
     except:
-        return json_response_message(422, ERROR_IAB_PREDICT)
+        return json_response_message(422, ERROR_IAB_PREDICT.format(podcast.episode_id))
 
     db_data = {} 
     db_data['ShowId'] = podcast.show_id
@@ -104,11 +104,11 @@ async def categorize_podcast(podcast: Podcast):
     db_data['TopicsMatch'] = topics_match
     db_data['Description'] = podcast.description
 
-    try:
-        db.write_category(db_data)
-    except:
-        return json_response_message(422, ERROR_DB_WRITE)
+    # try:
+    #     db.write_category(db_data)
+    # except:
+    #     return json_response_message(422, ERROR_DB_WRITE.format(podcast.episode_id))
 
     del_files(file_name, text_file)
 
-    return json_response_message(201, API_SUCCESS)
+    return json_response_message(201, API_SUCCESS.format(podcast.episode_id))

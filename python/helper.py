@@ -5,8 +5,10 @@ import requests
 from fastapi.responses import JSONResponse
 
 from constants import *
+from logger import Logger
 
 def json_response_message(code, message):
+    Logger(code, message)
     header = 'error' if 'Error ->' in message else 'info'
     return JSONResponse(
             status_code = code,
