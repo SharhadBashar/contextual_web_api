@@ -104,10 +104,10 @@ async def categorize_podcast(podcast: Podcast):
     db_data['TopicsMatch'] = topics_match
     db_data['Description'] = podcast.description
 
-    # try:
-    #     db.write_category(db_data)
-    # except:
-    #     return json_response_message(422, ERROR_DB_WRITE.format(podcast.episode_id))
+    try:
+        db.write_category(db_data)
+    except:
+        return json_response_message(422, ERROR_DB_WRITE.format(podcast.episode_id))
 
     del_files(file_name, text_file)
 
