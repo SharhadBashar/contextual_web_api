@@ -64,6 +64,7 @@ prompt-toolkit==3.0.38
 psutil==5.9.4
 ptyprocess==0.7.0
 pure-eval==0.2.2
+pydantic==1.10.7
 pydub==0.25.1
 Pygments==2.14.0
 pyodbc==4.0.38
@@ -96,4 +97,5 @@ transformers==4.27.4
 typing_extensions==4.5.0
 urllib3==1.26.14
 wcwidth==0.2.6
+whisper-jax @ git+https://github.com/sanchit-gandhi/whisper-jax.git@8244d43d2aad61cf88a2e02142799b01ae72681a
 zipp==3.15.0
