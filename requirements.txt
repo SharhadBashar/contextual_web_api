@@ -97,5 +97,4 @@ transformers==4.27.4
 typing_extensions==4.5.0
 urllib3==1.26.14
 wcwidth==0.2.6
-whisper-jax @ git+https://github.com/sanchit-gandhi/whisper-jax.git@8244d43d2aad61cf88a2e02142799b01ae72681a
 zipp==3.15.0
