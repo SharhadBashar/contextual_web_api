@@ -1,9 +1,3 @@
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
-  SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
-  SVC_USER: "ppiq"
-  PROJECT_NAME: "contextual_web_api"
-
 # Only run this pipeline when it's scheduled from the web interface
 workflow:
   rules:
@@ -11,5 +5,12 @@ workflow:
       when: always
     - when: never
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
+  SVC_USER: "ppiq"
+  PROJECT_NAME: "contextual_web_api"
+
 include: 
- - local: '.gitlab/template-deploy-python.yml'
+  - project: 'infrastructure/gitlab-ci'
+    file: 'template-deploy-python.yml'
