@@ -10,4 +10,5 @@ workflow:
       when: always
     - when: never
 
-include: '.gitlab/template-deploy-python.yml'
+include: 
+ - local: '.gitlab/template-deploy-python.yml'
