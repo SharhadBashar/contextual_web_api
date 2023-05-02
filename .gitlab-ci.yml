@@ -19,6 +19,7 @@ job:
   tags:
     - tagretspot
     - dev
+    - infra
   variables:
     SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
     SVC_USER: "ppiq"
