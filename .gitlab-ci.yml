@@ -1,4 +1,5 @@
 variables:
+  GIT_SUBMODULE_STRATEGY: recursive
   SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
   SVC_USER: "ppiq"
   PROJECT_NAME: "contextual_web_api"
