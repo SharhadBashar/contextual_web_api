@@ -1,3 +1,8 @@
+variables:
+  SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
+  SVC_USER: "ppiq"
+  PROJECT_NAME: "contextual_web_api"
+
 # Only run this pipeline when it's scheduled from the web interface
 workflow:
   rules:
@@ -5,13 +10,4 @@ workflow:
       when: always
     - when: never
 
-variables:
-  SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
-  SVC_USER: "ppiq"
-  PROJECT_NAME: "contextual_web_api"
-
-include:
-  - template: .gitlab/template-deploy-python.yml
-
-stages:
- - deploy
+include: '.gitlab/template-deploy-python.yml'
