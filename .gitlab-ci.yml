@@ -1,3 +1,10 @@
+# Only run this pipeline when it's scheduled from the web interface
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
+    - when: never
+
 variables:
   SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
   SVC_USER: "ppiq"
