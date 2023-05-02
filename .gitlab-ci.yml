@@ -16,6 +16,9 @@ include:
 
 # Run temaplate job
 job:
+  tags:
+    - tagretspot
+    - dev
   variables:
     SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
     SVC_USER: "ppiq"
