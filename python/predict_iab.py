@@ -4,6 +4,7 @@ import pickle
 from tqdm import tqdm
 from cleantext import clean
 from collections import Counter
+from googletrans import Translator
 
 import nltk
 from nltk.corpus import stopwords
@@ -15,11 +16,13 @@ from constants import *
 
 class Predict_IAB:
 	def __init__(self, text_file, 
+	      language = 'english',
 	      ryan_category = None, 
 		  static_data_path = None, 
 		  text_data_path = None, 
 		  category_path = None,
 		  model_name = None):
+		self.language = language
 		self.static_data_path = static_data_path if static_data_path else PATH_DATA_STATIC_CATEGORY
 		self.text_data_path = text_data_path if text_data_path else PATH_DATA_TEXT
 		self.category_path = category_path if category_path else PATH_DATA_CATEGORY
@@ -27,20 +30,23 @@ class Predict_IAB:
 		self.model_name = model_name if model_name else IAB_MODELS[0]
 
 		category_list = pickle.load(open(os.path.join(self.static_data_path, self.ryan_category), 'rb'))
-		self.get_custom_stopwords()
+		if (self.language == 'english'):
+			self.get_custom_stopwords()
 		text = self.clean_text(pickle.load(open(os.path.join(self.text_data_path, text_file), 'rb')))
 
 		recurring_n_words = self.get_recurring_n(text, n = RECURRING_N)
+		if (self.language != 'english'):
+			recurring_n_words = self.translate_words(recurring_n_words)
 		mapping = self.score_mapping(recurring_n_words, category_list, self.model_name)
 		self.save_mapping(mapping, text_file, self.category_path)
 
 	def get_custom_stopwords(self):
-		with open('stop_words.pkl', 'rb') as file:
+		with open('stop_words_{}.pkl'.format(self.language), 'rb') as file:
 			self.custom_stopwords = pickle.load(file)
 		file.close()
 
 	def clean_text(self, text_dict):
-		stop = stopwords.words('english')
+		stop = stopwords.words(self.language)
 		lemmatizer = WordNetLemmatizer()
 		text = text_dict['text'].replace('[^A-Za-z0-9 ]+', ' ')
 		text = clean(text, clean_all = False, 
@@ -52,12 +58,20 @@ class Predict_IAB:
 						   punct = True
 					)
 		text = ' '.join([word for word in text.split() if word not in (stop)])
-		text = ' '.join([word for word in text.split() if word not in (self.custom_stopwords)])
+		if (self.language == 'english'):
+			text = ' '.join([word for word in text.split() if word not in (self.custom_stopwords)])
 		text = ' '.join([lemmatizer.lemmatize(word) for word in text.split()])
 		return text
 
 	def get_recurring_n(self, text, n = RECURRING_N):
 		return Counter(text.split()).most_common(n)
+
+	def translate_words(self, recurring_n_words):
+		translator = Translator()
+		for i in range(RECURRING_N):
+			translation = translator.translate(recurring_n_words[i][0], src = self.language, dest = 'french').text
+			recurring_n_words[i] = (translation.lower(), recurring_n_words[i][1])
+		return recurring_n_words
 
 	def score_mapping(self, recurring_n_words, category_list, model_name):
 		mapping = dict()

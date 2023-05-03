@@ -14,7 +14,8 @@ PATH_DATA_STATIC_CATEGORY = os.path.join(PATH_DATA, 'static_category/')
 PATH_DATA_TEXT = os.path.join(PATH_DATA, 'text/')
 
 # Files
-STOP_WORDS = 'stop_words.pkl'
+STOP_WORDS_EN = 'stop_words_english.pkl'
+STOP_WORDS_FR = 'stop_words_french.pkl'
 APPLE_CAT = 'apple_cat.pkl'
 IAB_CAT = 'iab_cat.pkl'
 APPLE_CAT_MAP_EN = 'apple_cat_map_en.pkl'
@@ -76,7 +77,8 @@ SETUP = {
         PATH_LOG 
     ],
     'download': [
-        [STOP_WORDS, './'],
+        [STOP_WORDS_EN, './'],
+        # [STOP_WORDS_FR, './'],
         [DB_CONFIG, PATH_CONFIG],
         [APPLE_CAT, PATH_DATA_STATIC_CATEGORY],
         [IAB_CAT, PATH_DATA_STATIC_CATEGORY],
@@ -89,7 +91,8 @@ SETUP = {
 
 # Error Messages:
 API_RUNNING = 'API is up and running. WOOHOO!!!'
-PODCAST_REQUEST = '[Podcast {}] Recieved request'
+PODCAST_REQUEST_EN = 'ENGLISH [Podcast {}] Recieved request'
+PODCAST_REQUEST_FR = 'FRENCH [Podcast {}] Recieved request'
 API_SUCCESS = '[Podcast {}] Categorized successfully'
 ERROR_PODCAST_NAME = '[Podcast {}] Error -> Podcast name missing'
 ERROR_EPISODE_NAME = '[Podcast {}] Error -> Episode name missing'
