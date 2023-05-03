@@ -69,7 +69,7 @@ class Predict_IAB:
 	def translate_words(self, recurring_n_words):
 		translator = Translator()
 		for i in range(RECURRING_N):
-			translation = translator.translate(recurring_n_words[i][0], src = self.language, dest = 'french').text
+			translation = translator.translate(recurring_n_words[i][0], src = self.language, dest = 'english').text
 			recurring_n_words[i] = (translation.lower(), recurring_n_words[i][1])
 		return recurring_n_words
 
