@@ -10,19 +10,23 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 # Include template
-include: 
+include:
   - project: 'infrastructure/gitlab-ci'
-    file: 'template-deploy-python.yml'
+    file: '.gitlab-ci.vault-deploy-python.yml'
+  - project: 'infrastructure/gitlab-ci'
+    file: '.gitlab-ci.deploy-python.yml'
 
 # Run temaplate job
 job:
   tags:
     - tagretspot
-    - dev
-    - infra
+    - stg
   variables:
+    VAULT_TOKEN: $VAULT_TOKEN_STG
+    VAULT_URL: $VAULT_URL_STG
     SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
     SVC_USER: "ppiq"
     PROJECT_NAME: "contextual_web_api"
   extends:
-    - deploy_python
+    - .vault
+    - .deploy_python
