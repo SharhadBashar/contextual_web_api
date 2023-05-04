@@ -12,6 +12,7 @@ PATH_DATA_AUDIO = os.path.join(PATH_DATA, 'audio/')
 PATH_DATA_CATEGORY = os.path.join(PATH_DATA, 'category/')
 PATH_DATA_STATIC_CATEGORY = os.path.join(PATH_DATA, 'static_category/')
 PATH_DATA_TEXT = os.path.join(PATH_DATA, 'text/')
+PATH_STOP_WORDS = os.path.join(PATH_DATA, 'stop_words/')
 
 # Files
 STOP_WORDS_EN = 'stop_words_english.pkl'
@@ -84,11 +85,12 @@ SETUP = {
         PATH_DATA_CATEGORY,
         PATH_DATA_STATIC_CATEGORY,
         PATH_DATA_TEXT,
-        PATH_LOG 
+        PATH_LOG,
+        PATH_STOP_WORDS
     ],
     'download': [
-        [STOP_WORDS_EN, './'],
-        # [STOP_WORDS_FR, './'],
+        [STOP_WORDS_EN, PATH_STOP_WORDS],
+        # [STOP_WORDS_FR, PATH_STOP_WORDS],
         [DB_CONFIG, PATH_CONFIG],
         [APPLE_CAT, PATH_DATA_STATIC_CATEGORY],
         [IAB_CAT, PATH_DATA_STATIC_CATEGORY],

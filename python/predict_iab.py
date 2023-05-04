@@ -41,7 +41,7 @@ class Predict_IAB:
 		self.save_mapping(mapping, text_file, self.category_path)
 
 	def get_custom_stopwords(self):
-		with open('stop_words_{}.pkl'.format(self.language), 'rb') as file:
+		with open(os.path.join(PATH_STOP_WORDS, 'stop_words_{}.pkl'.format(self.language)), 'rb') as file:
 			self.custom_stopwords = pickle.load(file)
 		file.close()
 
