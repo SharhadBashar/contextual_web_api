@@ -1,3 +1,0 @@
-[submodule ".gitlab"]
-	path = .gitlab
-	url = git@git.targetspot.com:infrastructure/gitlab-ci.git
