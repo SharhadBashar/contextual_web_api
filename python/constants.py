@@ -55,7 +55,17 @@ WELCOME = '''Welcome to Contextual web API.
                  Please go to "home_url/status/" to see API status
               '''
 
-LOG_SETUP_MESSAGE = 'Contextual web API log file \n'
+LOG_SETUP_MESSAGE = {'title': 'Contextual web API log file'}
+LOG_TYPE = {'i': 'info', 'e': 'error'}
+LOG_FORMAT = {
+    'timestamp': '',
+    'status_code': '',
+    'log_type': '',
+    'show_id': '',
+    'episode_id': '',
+    'language': '',
+    'message': ''
+}
 
 S3_TRANSCRIBE = {
     'name': 'ts-transcription',
@@ -91,8 +101,7 @@ SETUP = {
 
 # Error Messages:
 API_RUNNING = 'API is up and running. WOOHOO!!!'
-PODCAST_REQUEST_EN = 'ENGLISH [Podcast {}] Recieved request'
-PODCAST_REQUEST_FR = 'FRENCH [Podcast {}] Recieved request'
+PODCAST_REQUEST = '[Podcast {}] Recieved request'
 API_SUCCESS = '[Podcast {}] Categorized successfully'
 ERROR_PODCAST_NAME = '[Podcast {}] Error -> Podcast name missing'
 ERROR_EPISODE_NAME = '[Podcast {}] Error -> Episode name missing'

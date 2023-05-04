@@ -7,15 +7,15 @@ from fastapi.responses import JSONResponse
 from constants import *
 from logger import Logger
 
-def json_response_message(code, message):
-    Logger(code, message)
-    header = 'error' if 'Error ->' in message else 'info'
+def json_response_message(code, message, show_id = '', episode_id = '', language = ''):
+    log_type = LOG_TYPE['e'] if 'Error ->' in message else LOG_TYPE['i']
+    Logger(code, log_type, message, show_id, episode_id, language)
     return JSONResponse(
             status_code = code,
-            content = {header: message},
+            content = {log_type: message},
         )
 
-def download(episode_id, url):
+def download(episode_id, url, show_id, language):
     try:
         r = requests.get(url, allow_redirects = True)
         r = requests.get(r.url, allow_redirects = True)
@@ -24,17 +24,18 @@ def download(episode_id, url):
         file.close()
         return episode_id + MP3
     except:
-        return json_response_message(422, ERROR_DOWNLOAD)
+        return json_response_message(422, ERROR_DOWNLOAD.format(episode_id), show_id, episode_id, language)
     
-def get_apple_cat(apple_cat):
+def get_apple_cat(apple_cat, show_id, episode_id, language):
+    apple_cat = apple_cat.capitalize()
     try:
         file = open(os.path.join(PATH_DATA_STATIC_CATEGORY, APPLE_CAT), 'rb')
         data = dict(pickle.load(file))
         return data[apple_cat]
     except:
-        return json_response_message(422, ERROR_GET_APPLE_CAT)
+        return json_response_message(422, ERROR_GET_APPLE_CAT.format(episode_id), show_id, episode_id, language)
 
-def get_iab_cat(text_file):
+def get_iab_cat(text_file, show_id, episode_id, language):
     try:
         iab_cat = -1 
         highest_score = 0
@@ -49,17 +50,17 @@ def get_iab_cat(text_file):
                 highest_score = score
         return iab_cat
     except:
-        return json_response_message(422, ERROR_GET_IAB_CAT)
+        return json_response_message(422, ERROR_GET_IAB_CAT.format(episode_id), show_id, episode_id, language)
 
-def load_topics(text_file):
+def load_topics(text_file, show_id, episode_id, language):
     try:
         file = open(os.path.join(PATH_DATA_CATEGORY, text_file), 'rb')
         data = pickle.load(file)
         return json.dumps(list(data.keys())), json.dumps(data) 
     except:
-        return json_response_message(422, ERROR_TOPICS)
+        return json_response_message(422, ERROR_TOPICS.format(episode_id), show_id, episode_id, language)
 
-def del_files(file_name, text_file):
+def del_files(file_name, text_file, show_id, episode_id, language):
     try:
         if os.path.isfile(os.path.join(PATH_DATA_AUDIO, file_name)):
             os.remove(os.path.join(PATH_DATA_AUDIO, file_name))
@@ -68,4 +69,4 @@ def del_files(file_name, text_file):
         if os.path.isfile(os.path.join(PATH_DATA_CATEGORY, text_file)):
             os.remove(os.path.join(PATH_DATA_CATEGORY, text_file))
     except:
-        return json_response_message(422, ERROR_DELETE_FILES)
+        return json_response_message(422, ERROR_DELETE_FILES.format(episode_id), show_id, episode_id, language)

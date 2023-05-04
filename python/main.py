@@ -1,4 +1,5 @@
 import os
+import json
 from pydantic import BaseModel
 from fastapi import FastAPI, status
 
@@ -35,19 +36,28 @@ app = FastAPI()
 async def status_check():
     return json_response_message(200, API_RUNNING)
 
-@app.get('/welcome/', status_code = status.HTTP_200_OK)
+@app.get('/welcome', status_code = status.HTTP_200_OK)
 async def intro():
     return WELCOME
 
+@app.get('/log', status_code = status.HTTP_200_OK)
+async def get_log():
+    json_list = []
+    with open(os.path.join(PATH_LOG, LOG_FILENAME)) as file:
+        for json_obj in file:
+            if (json_obj is not None):
+                json_list.append(json.loads(json_obj))
+    return json_list
+
 @app.post('/categorize/english', status_code = status.HTTP_201_CREATED)
 async def categorize_podcast(podcast: Podcast):
-    Logger(200, PODCAST_REQUEST_EN.format(podcast.episode_id))
+    Logger(200, LOG_TYPE['i'], PODCAST_REQUEST.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'english')
 
     if (podcast.podcast_name is None or podcast.podcast_name == ''):
-        return json_response_message(404, ERROR_PODCAST_NAME.format(podcast.episode_id))
+        return json_response_message(404, ERROR_PODCAST_NAME.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'english')
 
     if (podcast.episode_name is None or podcast.episode_name == ''):
-        return json_response_message(404, ERROR_EPISODE_NAME.format(podcast.episode_id))
+        return json_response_message(404, ERROR_EPISODE_NAME.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'english')
 
     if (podcast.apple_cat and len(podcast.apple_cat) > 0):
         apple_cat = podcast.apple_cat
@@ -62,49 +72,49 @@ async def categorize_podcast(podcast: Podcast):
         
         apple_cat_cleaned_data = predict_apple.clean_data(data)
         if (apple_cat_cleaned_data == ERROR_CLEAN_DATA):
-            return json_response_message(422, ERROR_CLEAN_DATA.format(podcast.episode_id))
+            return json_response_message(422, ERROR_CLEAN_DATA.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'english')
 
         apple_cat = predict_apple.predict(apple_cat_cleaned_data)
         if (apple_cat == ERROR_PREDICT):
-            return json_response_message(422, ERROR_PREDICT.format(podcast.episode_id))
+            return json_response_message(422, ERROR_PREDICT.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'english')
 
 
-    file_name = download(podcast.episode_id, podcast.content_url)
+    file_name = download(podcast.episode_id, podcast.content_url, podcast.show_id, 'english')
     if (file_name == ERROR_DOWNLOAD):
-        return json_response_message(422, ERROR_DOWNLOAD.format(podcast.episode_id))
+        return json_response_message(422, ERROR_DOWNLOAD.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'english')
 
 
     text = att_en.transcribe(file_name)
     if (text == ERROR_TRANSCRIBE):
-        return json_response_message(422, ERROR_DOWNLOAD.format(podcast.episode_id))
+        return json_response_message(422, ERROR_DOWNLOAD.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'english')
     
     text_file = att_en.save_text(text, file_name.split('.')[0] + PKL)
     if (text_file == ERROR_SAVE_TEXT):
-        return json_response_message(422, ERROR_SAVE_TEXT.format(podcast.episode_id))
+        return json_response_message(422, ERROR_SAVE_TEXT.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'english')
 
     try:
         s3.upload_file(os.path.join(PATH_DATA_TEXT, text_file), S3_TRANSCRIBE['name'])
     except:
-        return json_response_message(422, ERROR_S3_SAVE.format(podcast.episode_id))
+        return json_response_message(422, ERROR_S3_SAVE.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'english')
 
     try:
         Predict_IAB(text_file)
     except:
-        return json_response_message(422, ERROR_IAB_PREDICT.format(podcast.episode_id))
+        return json_response_message(422, ERROR_IAB_PREDICT.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'english')
 
     db_data = {} 
     db_data['ShowId'] = podcast.show_id
     db_data['EpisodeId'] = podcast.episode_id 
     db_data['PublisherId'] = podcast.publisher_id
-    db_data['AppleContentFormatId'] = get_apple_cat(apple_cat)
-    db_data['IabV2ContentFormatId'] = get_iab_cat(text_file)
+    db_data['AppleContentFormatId'] = get_apple_cat(apple_cat, podcast.show_id, podcast.episode_id, 'english')
+    db_data['IabV2ContentFormatId'] = get_iab_cat(text_file, podcast.show_id, podcast.episode_id, 'english')
     db_data['PodcastName'] = podcast.podcast_name
     db_data['EpisodeName'] = podcast.episode_name
     db_data['Keywords'] = podcast.keywords
     db_data['ContentType'] = podcast.content_type
     db_data['ContentUrl'] = podcast.content_url
     db_data['TransLink'] = S3_TRANSCRIBE['link'] + text_file
-    topics, topics_match = load_topics(text_file)
+    topics, topics_match = load_topics(text_file, podcast.show_id, podcast.episode_id, 'english')
     db_data['Topics'] = topics
     db_data['TopicsMatch'] = topics_match
     db_data['Description'] = podcast.description
@@ -112,21 +122,21 @@ async def categorize_podcast(podcast: Podcast):
     try:
         db.write_category(db_data)
     except:
-        return json_response_message(422, ERROR_DB_WRITE.format(podcast.episode_id))
+        return json_response_message(422, ERROR_DB_WRITE.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'english')
 
-    del_files(file_name, text_file)
+    del_files(file_name, text_file, podcast.show_id, podcast.episode_id, 'english')
 
-    return json_response_message(201, API_SUCCESS.format(podcast.episode_id))
+    return json_response_message(201, API_SUCCESS.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'english')
 
 @app.post('/categorize/french', status_code = status.HTTP_201_CREATED)
 async def categorize_podcast(podcast: Podcast):
-    Logger(200, PODCAST_REQUEST_FR.format(podcast.episode_id))
+    Logger(200, LOG_TYPE['i'], PODCAST_REQUEST.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'french')
 
     if (podcast.podcast_name is None or podcast.podcast_name == ''):
-        return json_response_message(404, ERROR_PODCAST_NAME.format(podcast.episode_id))
+        return json_response_message(404, ERROR_PODCAST_NAME.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'french')
 
     if (podcast.episode_name is None or podcast.episode_name == ''):
-        return json_response_message(404, ERROR_EPISODE_NAME.format(podcast.episode_id))
+        return json_response_message(404, ERROR_EPISODE_NAME.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'french')
 
     if (podcast.apple_cat and len(podcast.apple_cat) > 0):
         apple_cat = podcast.apple_cat
@@ -141,49 +151,49 @@ async def categorize_podcast(podcast: Podcast):
         
         apple_cat_cleaned_data = predict_apple.clean_data(data)
         if (apple_cat_cleaned_data == ERROR_CLEAN_DATA):
-            return json_response_message(422, ERROR_CLEAN_DATA.format(podcast.episode_id))
+            return json_response_message(422, ERROR_CLEAN_DATA.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'french')
 
         apple_cat = predict_apple.predict(apple_cat_cleaned_data)
         if (apple_cat == ERROR_PREDICT):
-            return json_response_message(422, ERROR_PREDICT.format(podcast.episode_id))
+            return json_response_message(422, ERROR_PREDICT.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'french')
 
 
-    file_name = download(podcast.episode_id, podcast.content_url)
+    file_name = download(podcast.episode_id, podcast.content_url, podcast.show_id, 'french')
     if (file_name == ERROR_DOWNLOAD):
-        return json_response_message(422, ERROR_DOWNLOAD.format(podcast.episode_id))
+        return json_response_message(422, ERROR_DOWNLOAD.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'french')
 
 
     text = att_fr.transcribe(file_name)
     if (text == ERROR_TRANSCRIBE):
-        return json_response_message(422, ERROR_DOWNLOAD.format(podcast.episode_id))
+        return json_response_message(422, ERROR_DOWNLOAD.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'french')
     
     text_file = att_fr.save_text(text, file_name.split('.')[0] + PKL)
     if (text_file == ERROR_SAVE_TEXT):
-        return json_response_message(422, ERROR_SAVE_TEXT.format(podcast.episode_id))
+        return json_response_message(422, ERROR_SAVE_TEXT.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'french')
 
     try:
         s3.upload_file(os.path.join(PATH_DATA_TEXT, text_file), S3_TRANSCRIBE['name'])
     except:
-        return json_response_message(422, ERROR_S3_SAVE.format(podcast.episode_id))
+        return json_response_message(422, ERROR_S3_SAVE.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'french')
 
     try:
         Predict_IAB(text_file, language = 'french')
     except:
-        return json_response_message(422, ERROR_IAB_PREDICT.format(podcast.episode_id))
+        return json_response_message(422, ERROR_IAB_PREDICT.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'french')
 
     db_data = {} 
     db_data['ShowId'] = podcast.show_id
     db_data['EpisodeId'] = podcast.episode_id 
     db_data['PublisherId'] = podcast.publisher_id
-    db_data['AppleContentFormatId'] = get_apple_cat(apple_cat)
-    db_data['IabV2ContentFormatId'] = get_iab_cat(text_file)
+    db_data['AppleContentFormatId'] = get_apple_cat(apple_cat, podcast.show_id, podcast.episode_id, 'french')
+    db_data['IabV2ContentFormatId'] = get_iab_cat(text_file, podcast.show_id, podcast.episode_id, 'french')
     db_data['PodcastName'] = podcast.podcast_name
     db_data['EpisodeName'] = podcast.episode_name
     db_data['Keywords'] = podcast.keywords
     db_data['ContentType'] = podcast.content_type
     db_data['ContentUrl'] = podcast.content_url
     db_data['TransLink'] = S3_TRANSCRIBE['link'] + text_file
-    topics, topics_match = load_topics(text_file)
+    topics, topics_match = load_topics(text_file, podcast.show_id, podcast.episode_id, 'french')
     db_data['Topics'] = topics
     db_data['TopicsMatch'] = topics_match
     db_data['Description'] = podcast.description
@@ -191,8 +201,8 @@ async def categorize_podcast(podcast: Podcast):
     try:
         db.write_category(db_data)
     except:
-        return json_response_message(422, ERROR_DB_WRITE.format(podcast.episode_id))
+        return json_response_message(422, ERROR_DB_WRITE.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'french')
 
-    del_files(file_name, text_file)
+    del_files(file_name, text_file, podcast.show_id, podcast.episode_id, 'french')
 
-    return json_response_message(201, API_SUCCESS.format(podcast.episode_id))
+    return json_response_message(201, API_SUCCESS.format(podcast.episode_id), podcast.show_id, podcast.episode_id, 'french')
