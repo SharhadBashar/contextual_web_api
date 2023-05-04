@@ -12,8 +12,6 @@ variables:
 # Include template
 include:
   - project: 'infrastructure/gitlab-ci'
-    file: '.gitlab-ci.vault-deploy-python.yml'
-  - project: 'infrastructure/gitlab-ci'
     file: '.gitlab-ci.deploy-python.yml'
 
 # Run temaplate job
@@ -28,5 +26,4 @@ job:
     SVC_USER: "ppiq"
     PROJECT_NAME: "contextual_web_api"
   extends:
-    - .vault
     - .deploy_python
