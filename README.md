@@ -9,8 +9,8 @@ On first run, setup directories and download required files.<br>
 To do so run this command from the python directory: `python setup.py`<br>
 
 To Run the API:
-1. uvicorn main:app --reload 
-2. uvicorn main:app --workers 4 
+1. `uvicorn main:app --reload` 
+2. `uvicorn main:app --workers 4`
 
 More information on the API and how to setup and operate can be found in this [document](https://audiovalley.atlassian.net/wiki/spaces/PPIQ/pages/3648651265/Contextual+API+Data+Models)<br>
 

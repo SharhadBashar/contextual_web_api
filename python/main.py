@@ -78,6 +78,7 @@ async def categorize_podcast(podcast: Podcast):
 
     try:
         s3.upload_file(os.path.join(PATH_DATA_TEXT, text_file), S3_TRANSCRIBE['name'])
+        Logger(201, LOG_TYPE['i'], S3_SAVE.format(podcast.episode_id, os.path.join(S3_URI + S3_TRANSCRIBE['name'], text_file)), podcast.show_id, podcast.episode_id, language)
     except Exception as error:
         return json_response_message(422, ERROR_S3_SAVE.format(podcast.episode_id, error), podcast.show_id, podcast.episode_id, language)
 
@@ -105,6 +106,7 @@ async def categorize_podcast(podcast: Podcast):
 
     try:
         db.write_category(db_data)
+        Logger(201, LOG_TYPE['i'], DATA_WRITE.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
     except Exception as error:
         return json_response_message(422, ERROR_DB_WRITE.format(podcast.episode_id, error), podcast.show_id, podcast.episode_id, language)
 
@@ -141,6 +143,7 @@ async def categorize_podcast(podcast: Podcast):
 
     try:
         s3.upload_file(os.path.join(PATH_DATA_TEXT, text_file), S3_TRANSCRIBE['name'])
+        Logger(201, LOG_TYPE['i'], S3_SAVE.format(podcast.episode_id, os.path.join(S3_URI + S3_TRANSCRIBE['name'], text_file)), podcast.show_id, podcast.episode_id, language)
     except Exception as error:
         return json_response_message(422, ERROR_S3_SAVE.format(podcast.episode_id, error), podcast.show_id, podcast.episode_id, language)
 

@@ -32,6 +32,7 @@ WAV = '.wav'
 PKL = '.pkl'
 TXT = '.txt'
 LOG = '.log'
+S3_URI = 's3://'
 
 # Models
 WHISPER_MODEL_TYPES = ['tiny.en', 'tiny', 'small', 'base', 'medium', 'large']
@@ -105,8 +106,11 @@ SETUP = {
 API_RUNNING = 'API is up and running. WOOHOO!!!'
 PODCAST_REQUEST = '[Podcast {}] Recieved request'
 API_SUCCESS = '[Podcast {}] Categorized successfully'
-PODCAST_DOWNLOAD = '[Podcast {}] downloaded successfully at {}'
-TRANSCRIBE_SAVE = '[Podcast {}] transcribed successfully at {}'
+PODCAST_DOWNLOAD = '[Podcast {}] Downloaded successfully at {}'
+TRANSCRIBE_SAVE = '[Podcast {}] Transcribed successfully at {}'
+S3_SAVE = '[Podcast {}] Uploaded successfully to {}'
+DATA_WRITE = '[Podcast {}] DB write successful'
+DATA_DELETE = '[Podcast {}] Deleted successfully'
 
 # Error Messages
 ERROR_PODCAST_NAME = '[Podcast {}] Error -> Podcast name missing'

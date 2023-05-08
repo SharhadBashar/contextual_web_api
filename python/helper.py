@@ -69,5 +69,6 @@ def del_files(file_name, text_file, show_id, episode_id, language):
             os.remove(os.path.join(PATH_DATA_TEXT, text_file))
         if os.path.isfile(os.path.join(PATH_DATA_CATEGORY, text_file)):
             os.remove(os.path.join(PATH_DATA_CATEGORY, text_file))
+        Logger(201, LOG_TYPE['i'], DATA_DELETE.format(episode_id), show_id, episode_id, language)
     except Exception as error:
         return json_response_message(422, ERROR_DELETE_FILES.format(episode_id, error), show_id, episode_id, language)
