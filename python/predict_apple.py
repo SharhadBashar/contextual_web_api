@@ -8,6 +8,7 @@ nltk.download("stopwords")
 from nltk.stem import WordNetLemmatizer
 
 from constants import *
+from helper import json_response_message
 
 class Predict_Apple:
     def __init__(self, apple_cat_map = None, model_filename = None, static_cat_path = None, model_path = None):
@@ -19,7 +20,7 @@ class Predict_Apple:
         self.category_dict = pickle.load(open(os.path.join(self.static_cat_path, self.apple_cat_map), 'rb'))
         self.model = pickle.load(open(os.path.join(self.model_path, self.model_filename), 'rb'))
         
-    def clean_data(self, data):
+    def clean_data(self, data, show_id, episode_id, language = 'english'):
         lemmatizer = WordNetLemmatizer()
         data = data.replace('[^A-Za-z0-9 ]+', ' ')
         data = clean(data, clean_all = False, 
@@ -32,11 +33,11 @@ class Predict_Apple:
                     )
         data = ' '.join([lemmatizer.lemmatize(word) for word in data.split()])
         if (data is None):
-            return ERROR_CLEAN_DATA
+            return json_response_message(422, ERROR_CLEAN_DATA.format(episode_id), show_id, episode_id, language)
         return data
     
-    def predict(self, inp):
+    def predict(self, inp, data, show_id, episode_id, language = 'english'):
         try:
             return self.category_dict[self.model.predict([inp])[0]]
-        except:
-            return ERROR_PREDICT
+        except Exception as error:
+            return json_response_message(422, ERROR_PREDICT.format(episode_id, error), show_id, episode_id, language)

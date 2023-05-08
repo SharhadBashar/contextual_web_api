@@ -14,4 +14,10 @@ To Run the API:
 
 More information on the API and how to setup and operate can be found in this [document](https://audiovalley.atlassian.net/wiki/spaces/PPIQ/pages/3648651265/Contextual+API+Data+Models)<br>
 
+If you get the error:<br>
+`[Errno 48] Address already in use`<br>
+Use `ps -fA | grep python`<br>
+To find the port in use and kill it using<br>
+`kill -9 <PORT_NUMBER>`
+
 For any questions, feel free to email or slack Sharhad Bashar or Henry Visotski<br>

@@ -101,21 +101,26 @@ SETUP = {
     ]
 }
 
-# Error Messages:
+# Info Messages:
 API_RUNNING = 'API is up and running. WOOHOO!!!'
 PODCAST_REQUEST = '[Podcast {}] Recieved request'
 API_SUCCESS = '[Podcast {}] Categorized successfully'
+PODCAST_DOWNLOAD = '[Podcast {}] downloaded successfully at {}'
+TRANSCRIBE_SAVE = '[Podcast {}] transcribed successfully at {}'
+
+# Error Messages
 ERROR_PODCAST_NAME = '[Podcast {}] Error -> Podcast name missing'
 ERROR_EPISODE_NAME = '[Podcast {}] Error -> Episode name missing'
 ERROR_CLEAN_DATA = '[Podcast {}] Error -> class: predict_apple; function: clean_data'
-ERROR_PREDICT = '[Podcast {}] Error -> class: predict_apple; function: predict'
-ERROR_DOWNLOAD = '[Podcast {}] Error -> unable to download podcast'
-ERROR_TRANSCRIBE = '[Podcast {}] Error -> class: att; function: transcribe'
-ERROR_SAVE_TEXT = '[Podcast {}] Error -> class: att; function: save_text'
-ERROR_S3_SAVE = '[Podcast {}] Error -> unable to upload transcribed test to S3 bucket'
-ERROR_IAB_PREDICT = '[Podcast {}] Error -> class: predict_iab'
-ERROR_GET_APPLE_CAT = '[Podcast {}] Error -> class: helper; function: get_apple_cat'
-ERROR_GET_IAB_CAT = '[Podcast {}] Error -> class: helper; function: get_iab_cat'
-ERROR_TOPICS = '[Podcast {}] Error -> class: helper; function: load_topics'
-ERROR_DELETE_FILES = '[Podcast {}] Error -> class: helper; function: del_files'
-ERROR_DB_WRITE = '[Podcast {}] Error -> unable to write to database'
+ERROR_PREDICT = '[Podcast {}] Error -> class: predict_apple; function: predict. Exact Error Message: {}'
+ERROR_DOWNLOAD = '[Podcast {}] Error -> unable to download podcast. Exact Error Message: {}'
+ERROR_WHISPER_MODEL = '[{}] is not a valid model type for whisper'
+ERROR_TRANSCRIBE = '[Podcast {}] Error -> class: att; function: transcribe. Exact Error Message: {}'
+ERROR_SAVE_TEXT = '[Podcast {}] Error -> class: att; function: save_text. Exact Error Message: {}'
+ERROR_S3_SAVE = '[Podcast {}] Error -> unable to upload transcribed test to S3 bucket. Exact Error Message: {}'
+ERROR_IAB_PREDICT = '[Podcast {}] Error -> class: predict_iab. Exacat Error Message: {}'
+ERROR_GET_APPLE_CAT = '[Podcast {}] Error -> class: helper; function: get_apple_cat. Exact Error Message: {}'
+ERROR_GET_IAB_CAT = '[Podcast {}] Error -> class: helper; function: get_iab_cat. Exact Error Message: {}'
+ERROR_TOPICS = '[Podcast {}] Error -> class: helper; function: load_topics. Exact Error Message: {}'
+ERROR_DELETE_FILES = '[Podcast {}] Error -> class: helper; function: del_files. Exact Error Message: {}'
+ERROR_DB_WRITE = '[Podcast {}] Error -> unable to write to database. Exact Error Message: {}'

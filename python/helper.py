@@ -15,16 +15,17 @@ def json_response_message(code, message, show_id = '', episode_id = '', language
             content = {log_type: message},
         )
 
-def download(episode_id, url, show_id, language):
+def download(episode_id, url, show_id, language = 'english'):
     try:
         r = requests.get(url, allow_redirects = True)
         r = requests.get(r.url, allow_redirects = True)
         with open(PATH_DATA_AUDIO + episode_id + MP3, 'wb') as file:
             file.write(r.content)
         file.close()
+        Logger(201, LOG_TYPE['i'], PODCAST_DOWNLOAD.format(episode_id, PATH_DATA_AUDIO + episode_id + MP3), show_id, episode_id, language)
         return episode_id + MP3
-    except:
-        return json_response_message(422, ERROR_DOWNLOAD.format(episode_id), show_id, episode_id, language)
+    except Exception as error:
+        return json_response_message(404, ERROR_DOWNLOAD.format(episode_id, error), show_id, episode_id, language)
     
 def get_apple_cat(apple_cat, show_id, episode_id, language):
     apple_cat = apple_cat.capitalize()
@@ -32,8 +33,8 @@ def get_apple_cat(apple_cat, show_id, episode_id, language):
         file = open(os.path.join(PATH_DATA_STATIC_CATEGORY, APPLE_CAT), 'rb')
         data = dict(pickle.load(file))
         return data[apple_cat]
-    except:
-        return json_response_message(422, ERROR_GET_APPLE_CAT.format(episode_id), show_id, episode_id, language)
+    except Exception as error:
+        return json_response_message(422, ERROR_GET_APPLE_CAT.format(episode_id, error), show_id, episode_id, language)
 
 def get_iab_cat(text_file, show_id, episode_id, language):
     try:
@@ -49,16 +50,16 @@ def get_iab_cat(text_file, show_id, episode_id, language):
                 iab_cat = val['id']
                 highest_score = score
         return iab_cat
-    except:
-        return json_response_message(422, ERROR_GET_IAB_CAT.format(episode_id), show_id, episode_id, language)
+    except Exception as error:
+        return json_response_message(422, ERROR_GET_IAB_CAT.format(episode_id, error), show_id, episode_id, language)
 
 def load_topics(text_file, show_id, episode_id, language):
     try:
         file = open(os.path.join(PATH_DATA_CATEGORY, text_file), 'rb')
         data = pickle.load(file)
         return json.dumps(list(data.keys())), json.dumps(data) 
-    except:
-        return json_response_message(422, ERROR_TOPICS.format(episode_id), show_id, episode_id, language)
+    except Exception as error:
+        return json_response_message(422, ERROR_TOPICS.format(episode_id, error), show_id, episode_id, language)
 
 def del_files(file_name, text_file, show_id, episode_id, language):
     try:
@@ -68,5 +69,5 @@ def del_files(file_name, text_file, show_id, episode_id, language):
             os.remove(os.path.join(PATH_DATA_TEXT, text_file))
         if os.path.isfile(os.path.join(PATH_DATA_CATEGORY, text_file)):
             os.remove(os.path.join(PATH_DATA_CATEGORY, text_file))
-    except:
-        return json_response_message(422, ERROR_DELETE_FILES.format(episode_id), show_id, episode_id, language)
+    except Exception as error:
+        return json_response_message(422, ERROR_DELETE_FILES.format(episode_id, error), show_id, episode_id, language)
