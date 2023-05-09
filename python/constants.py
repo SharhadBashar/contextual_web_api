@@ -36,9 +36,10 @@ S3_URI = 's3://'
 
 # Models
 WHISPER_MODEL_TYPES = ['tiny.en', 'tiny', 'small', 'base', 'medium', 'large']
-IAB_MODELS = ['all-mpnet-base-v2', 'bert-base-nli-mean-tokens', 'bert-large-uncased']
+IAB_MODELS = ['sentence-transformers/all-mpnet-base-v2', 'diptanuc/all-mpnet-base-v2', 'bert-base-nli-mean-tokens', 'bert-large-uncased']
 IAB_MODELS_PRAMS = {
-    'all-mpnet-base-v2': 768, 
+    'sentence-transformers/all-mpnet-base-v2': 768, 
+    'diptanuc/all-mpnet-base-v2': 768,
     'bert-base-nli-mean-tokens': 768,
     'bert-large-uncased': 1024
 }
@@ -122,7 +123,7 @@ ERROR_WHISPER_MODEL = '[{}] is not a valid model type for whisper'
 ERROR_TRANSCRIBE = '[Podcast {}] Error -> class: att; function: transcribe. Exact Error Message: {}'
 ERROR_SAVE_TEXT = '[Podcast {}] Error -> class: att; function: save_text. Exact Error Message: {}'
 ERROR_S3_SAVE = '[Podcast {}] Error -> unable to upload transcribed test to S3 bucket. Exact Error Message: {}'
-ERROR_IAB_PREDICT = '[Podcast {}] Error -> class: predict_iab. Exacat Error Message: {}'
+ERROR_IAB_PREDICT = '[Podcast {}] Error -> class: predict_iab. Exact Error Message: {}'
 ERROR_GET_APPLE_CAT = '[Podcast {}] Error -> class: helper; function: get_apple_cat. Exact Error Message: {}'
 ERROR_GET_IAB_CAT = '[Podcast {}] Error -> class: helper; function: get_iab_cat. Exact Error Message: {}'
 ERROR_TOPICS = '[Podcast {}] Error -> class: helper; function: load_topics. Exact Error Message: {}'

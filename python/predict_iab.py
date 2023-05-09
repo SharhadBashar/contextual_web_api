@@ -27,7 +27,7 @@ class Predict_IAB:
 		self.text_data_path = text_data_path if text_data_path else PATH_DATA_TEXT
 		self.category_path = category_path if category_path else PATH_DATA_CATEGORY
 		self.ryan_category = ryan_category if ryan_category else RYAN_CAT
-		self.model_name = model_name if model_name else IAB_MODELS[0]
+		self.model_name = model_name if model_name else IAB_MODELS[1]
 
 		category_list = pickle.load(open(os.path.join(self.static_data_path, self.ryan_category), 'rb'))
 		if (self.language == 'english'):
