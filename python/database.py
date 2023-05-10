@@ -46,8 +46,8 @@ class Database:
                     data['AppleContentFormatId'], 
                     data['IabV2ContentFormatId'], 
                     # data['Active'] -> Always True initially, 
-                    datetime.now(), # CreatedAt
-                    datetime.now(), # UpdatedAt
+                    datetime.now().strftime('%Y-%m-%d %H:%M:%S'), # CreatedDate
+                    datetime.now().strftime('%Y-%m-%d %H:%M:%S'), # UpdatedDate
                     data['PodcastName'],
                     data['EpisodeName'],
                     data['Keywords'],
