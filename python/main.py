@@ -1,5 +1,6 @@
 import os
 import json
+from typing import Union
 from pydantic import BaseModel
 from fastapi import FastAPI, status
 
@@ -18,10 +19,10 @@ class Podcast(BaseModel):
     publisher_id: int
     podcast_name: str
     episode_name: str
-    apple_cat: str
-    content_type: str
-    description: str 
-    keywords: list 
+    apple_cat: Union[str, None] = None
+    content_type: Union[str, None] = None
+    description: Union[str, None] = None 
+    keywords: Union[list, None] = None 
     content_url: str
 
 s3 = S3() 
@@ -95,14 +96,14 @@ async def categorize_podcast(podcast: Podcast):
     db_data['IabV2ContentFormatId'] = get_iab_cat(text_file, podcast.show_id, podcast.episode_id, language)
     db_data['PodcastName'] = podcast.podcast_name
     db_data['EpisodeName'] = podcast.episode_name
-    db_data['Keywords'] = podcast.keywords
-    db_data['ContentType'] = podcast.content_type
+    db_data['Keywords'] = podcast.keywords if podcast.keywords else []
+    db_data['ContentType'] = podcast.content_type if podcast.content_type else 'audio'
     db_data['ContentUrl'] = podcast.content_url
     db_data['TransLink'] = S3_TRANSCRIBE['link'] + text_file
     topics, topics_match = load_topics(text_file, podcast.show_id, podcast.episode_id, language)
     db_data['Topics'] = topics
     db_data['TopicsMatch'] = topics_match
-    db_data['Description'] = podcast.description
+    db_data['Description'] = podcast.description if podcast.description else ''
 
     try:
         db.write_category(db_data)
@@ -160,14 +161,14 @@ async def categorize_podcast(podcast: Podcast):
     db_data['IabV2ContentFormatId'] = get_iab_cat(text_file, podcast.show_id, podcast.episode_id, language)
     db_data['PodcastName'] = podcast.podcast_name
     db_data['EpisodeName'] = podcast.episode_name
-    db_data['Keywords'] = podcast.keywords
-    db_data['ContentType'] = podcast.content_type
+    db_data['Keywords'] = podcast.keywords if podcast.keywords else []
+    db_data['ContentType'] = podcast.content_type if podcast.content_type else 'audio'
     db_data['ContentUrl'] = podcast.content_url
     db_data['TransLink'] = S3_TRANSCRIBE['link'] + text_file
     topics, topics_match = load_topics(text_file, podcast.show_id, podcast.episode_id, language)
     db_data['Topics'] = topics
     db_data['TopicsMatch'] = topics_match
-    db_data['Description'] = podcast.description
+    db_data['Description'] = podcast.description if podcast.description else ''
 
     try:
         db.write_category(db_data)
