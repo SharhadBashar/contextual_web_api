@@ -83,7 +83,7 @@ async def categorize_podcast(podcast: Podcast):
         return json_response_message(422, ERROR_S3_SAVE.format(podcast.episode_id, error), podcast.show_id, podcast.episode_id, language)
 
     try:
-        Predict_IAB(text_file)
+        Predict_IAB(text_file, podcast.episode_id, podcast.show_id, language)
     except Exception as error:
         return json_response_message(422, ERROR_IAB_PREDICT.format(podcast.episode_id, error), podcast.show_id, podcast.episode_id, language)
 
@@ -138,7 +138,7 @@ async def categorize_podcast(podcast: Podcast):
 
     file_name = download(podcast.episode_id, podcast.content_url, podcast.show_id, language)
 
-    text = att_en.transcribe(file_name, podcast.show_id, podcast.episode_id, language)
+    text = att_fr.transcribe(file_name, podcast.show_id, podcast.episode_id, language)
     text_file = att_fr.save_text(text, file_name.split('.')[0] + PKL, podcast.show_id, podcast.episode_id, language)
 
     try:
@@ -148,7 +148,7 @@ async def categorize_podcast(podcast: Podcast):
         return json_response_message(422, ERROR_S3_SAVE.format(podcast.episode_id, error), podcast.show_id, podcast.episode_id, language)
 
     try:
-        Predict_IAB(text_file)
+        Predict_IAB(text_file, podcast.episode_id, podcast.show_id, language)
     except Exception as error:
         return json_response_message(422, ERROR_IAB_PREDICT.format(podcast.episode_id, error), podcast.show_id, podcast.episode_id, language)
 

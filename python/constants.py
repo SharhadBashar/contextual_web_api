@@ -110,6 +110,7 @@ API_SUCCESS = '[Podcast {}] Categorized successfully'
 PODCAST_DOWNLOAD = '[Podcast {}] Downloaded successfully at {}'
 TRANSCRIBE_SAVE = '[Podcast {}] Transcribed successfully at {}'
 S3_SAVE = '[Podcast {}] Uploaded successfully to {}'
+CAT_SAVE = '[Podcast {}] Category mapping successfully saved at {}'
 DATA_WRITE = '[Podcast {}] DB write successful'
 DATA_DELETE = '[Podcast {}] Deleted successfully'
 

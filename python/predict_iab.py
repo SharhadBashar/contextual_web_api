@@ -13,9 +13,10 @@ from nltk.stem import WordNetLemmatizer
 from sentence_transformers import SentenceTransformer, util
 
 from constants import *
+from logger import Logger
 
 class Predict_IAB:
-	def __init__(self, text_file, 
+	def __init__(self, text_file, episode_id, show_id,
 	      language = 'english',
 	      ryan_category = None, 
 		  static_data_path = None, 
@@ -38,7 +39,7 @@ class Predict_IAB:
 		if (self.language != 'english'):
 			recurring_n_words = self.translate_words(recurring_n_words)
 		mapping = self.score_mapping(recurring_n_words, category_list, self.model_name)
-		self.save_mapping(mapping, text_file, self.category_path)
+		self.save_mapping(mapping, text_file, self.category_path, episode_id, show_id, self.language)
 
 	def get_custom_stopwords(self):
 		with open(os.path.join(PATH_STOP_WORDS, 'stop_words_{}.pkl'.format(self.language)), 'rb') as file:
@@ -106,7 +107,7 @@ class Predict_IAB:
 			}
 		return mapping
 
-	def save_mapping(self, mapping, mapping_file, category_path):
+	def save_mapping(self, mapping, mapping_file, category_path, episode_id, show_id, language):
 		with open(os.path.join(category_path, mapping_file), 'wb') as file: 
-			pickle.dump(mapping, file) 
-		print('Category mapping saved at:', os.path.join(category_path, mapping_file))
+			pickle.dump(mapping, file)
+		Logger(200, LOG_TYPE['i'], CAT_SAVE.format(episode_id, os.path.join(category_path, mapping_file)), show_id, episode_id, language)

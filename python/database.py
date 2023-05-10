@@ -6,7 +6,7 @@ from datetime import datetime
 from constants import *
 
 class Database:
-    def __init__(self, env = 'staging'):
+    def __init__(self, env = 'prod'):
         with open(os.path.join(PATH_CONFIG, DB_CONFIG)) as file:
             database_info = json.load(file)
         self.conn_common = self._database_conn(database_info[env], 'common')
@@ -29,7 +29,7 @@ class Database:
         query = """INSERT INTO 
                     dbo.ContextualCategories 
                     (ShowId, EpisodeId, PublisherId, AppleContentFormatId, IabV2ContentFormatId, 
-                     Active, CreatedAt, UpdatedAt,
+                     Active, CreatedDate, UpdatedDate,
                      PodcastName, EpisodeName, Keywords,
                      ContentType, ContentUrl, TransLink,
                      Topics, TopicsMatch, Description)

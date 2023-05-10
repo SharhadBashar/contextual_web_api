@@ -20,4 +20,7 @@ Use `ps -fA | grep python`<br>
 To find the port in use and kill it using<br>
 `kill -9 <PORT_NUMBER>`
 
+For MAC M1 chip:
+If you get `ffmpeg` error, use `eval "$(/opt/homebrew/bin/brew shellenv)"` to fix
+
 For any questions, feel free to email or slack Sharhad Bashar or Henry Visotski<br>
