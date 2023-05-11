@@ -69,8 +69,8 @@ class DB:
                 """
         cursor = conn.cursor()
         cursor.execute(query)
-        count = cursor.fetchone()
-        if (count == 0):
+        count = cursor.fetchone()[0]
+        if (count > 0):
             print('Successful Read and Write')
         else:
             print('UNsuccessful Read and Write')
