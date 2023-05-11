@@ -54,8 +54,8 @@ class Database:
                     data['ContentType'],
                     data['ContentUrl'],
                     data['TransLink'],
-                    data['Topics'],
-                    data['TopicsMatch'],
+                    str(data['Topics']),
+                    str(data['TopicsMatch']),
                     data['Description']
                 )
         cursor = conn.cursor()
