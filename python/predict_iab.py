@@ -102,7 +102,7 @@ class Predict_IAB:
 				'id': category_list[idx][0],
 	 		    'data': recurring_n_words[i][0],
 	 		    'table': category_list[idx][1],
-	 		    'score': scores[i].item(),
+	 		    'score': round(scores[i].item(), 4),
 	 		    'count': recurring_n_words[i][1]
 			}
 		return mapping
