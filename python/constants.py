@@ -113,6 +113,7 @@ S3_SAVE = '[Podcast {}] Uploaded successfully to {}'
 CAT_SAVE = '[Podcast {}] Category mapping successfully saved at {}'
 DATA_WRITE = '[Podcast {}] DB write successful'
 DATA_DELETE = '[Podcast {}] Deleted successfully'
+FILE_UPDATE = '[File {}] Updated successfully'
 
 # Error Messages
 ERROR_PODCAST_NAME = '[Podcast {}] Error -> Podcast name missing'
@@ -130,3 +131,4 @@ ERROR_GET_IAB_CAT = '[Podcast {}] Error -> class: helper; function: get_iab_cat.
 ERROR_TOPICS = '[Podcast {}] Error -> class: helper; function: load_topics. Exact Error Message: {}'
 ERROR_DELETE_FILES = '[Podcast {}] Error -> class: helper; function: del_files. Exact Error Message: {}'
 ERROR_DB_WRITE = '[Podcast {}] Error -> unable to write to database. Exact Error Message: {}'
+FILE_UPDATE_FAIL = '[File {}] Could NOT be updated'

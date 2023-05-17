@@ -30,7 +30,7 @@ def runner():
 
 def download(file):
     s3 = S3()
-    s3.download_file(file_name, S3_CONTEXTUAL_WEB_API['name'], SETUP['download'][file])
+    s3.download_file(file, S3_CONTEXTUAL_WEB_API['name'], SETUP['download'][file])
     print('{} downloaded'.format(file))
 
 if __name__ == '__main__':

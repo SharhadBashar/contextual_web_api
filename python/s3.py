@@ -9,13 +9,17 @@ from botocore.exceptions import ClientError
 
 class S3:
     def __init__(self):
+        self.s3_resource = boto3.resource('s3')
         self.s3_client = boto3.client('s3')
-        
+
+    def get_info(self, bucket, file_name):
+        return self.s3_resource.Object(bucket, file_name)
+
     def create_bucket(self, bucket_name, region = None):
         try:
             if region is None:
                 s3_client = self.s3_client
-                s3_client.create_bucket(Bucket=bucket_name)
+                s3_client.create_bucket(Bucket = bucket_name)
             else:
                 s3_client = boto3.client('s3', region_name = region)
                 location = {'LocationConstraint': region}
