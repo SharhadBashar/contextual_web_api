@@ -25,11 +25,29 @@ class Podcast(BaseModel):
     keywords: Union[list, None] = None 
     content_url: str
 
-s3 = S3() 
-db = Database(env = 'prod')
-att_en = Audio_To_Text_EN() 
-att_fr = Audio_To_Text_FR()  
-predict_apple = Predict_Apple()
+try:
+    s3 = S3()
+except Exception as error:
+    Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('AWS S3', error))
+
+try:
+    db = Database(env = 'prod')
+except Exception as error:
+    Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Data Base', error))
+
+try:
+    predict_apple = Predict_Apple()
+except Exception as error:
+    Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Predicting Apple Categories', error))
+
+try:
+    att_en = Audio_To_Text_EN()
+except Exception as error:
+    Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Audio To Text: English', error))
+try:
+    att_fr = Audio_To_Text_FR()
+except Exception as error:
+    Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Audio To Text: French', error))
 
 app = FastAPI()
 
