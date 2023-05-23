@@ -26,7 +26,7 @@ def runner():
         s3.download_file(file, S3_CONTEXTUAL_WEB_API['name'], download_path)
     print('Files downloaded')
 
-    print('SETUP COMLPETE')
+    print('SETUP COMPLETE')
 
 def download(file):
     s3 = S3()

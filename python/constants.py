@@ -7,6 +7,7 @@ PATH_DATA = '../data/'
 PATH_MODEL = '../model/'
 PATH_CONFIG = '../config/'
 PATH_LOG = '../log/'
+PATH_DEBUG = '../debug/'
 
 PATH_DATA_AUDIO = os.path.join(PATH_DATA, 'audio/')
 PATH_DATA_CATEGORY = os.path.join(PATH_DATA, 'category/')
@@ -32,6 +33,7 @@ WAV = '.wav'
 PKL = '.pkl'
 TXT = '.txt'
 LOG = '.log'
+JSON = '.json'
 S3_URI = 's3://'
 
 # Models
