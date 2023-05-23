@@ -20,16 +20,16 @@ def read_inputs_file(file_name):
     return podcast_input
 
 def debug_get_query(data):
-    data['PodcastName'] = json.dumps(data['PodcastName'])
-    data['EpisodeName'] = json.dumps(data['EpisodeName'])
-    data['Topics'] = json.dumps(data['Topics'])
-    data['Description'] = json.dumps(data['Description'])
+    data['PodcastName'] = data['PodcastName'].replace("'", "")
+    data['EpisodeName'] = str(json.dumps(data['EpisodeName']))
+    data['Description'] = str(json.dumps(data['Description']))
     return f'''
     Copy the following
     >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     
     topics = json.dumps({data['Topics']})
     topics_match = json.dumps({data['TopicsMatch']})
+    
     conn = pyodbc.connect(self.conn_dmp)
     query = """
     INSERT INTO 
