@@ -25,10 +25,10 @@ class Database:
         )
     
     def write_category(self, data):
-        data['PodcastName'] = json.dumps(data['PodcastName'])
-        data['EpisodeName'] = json.dumps(data['EpisodeName'])
-        data['Topics'] = json.dumps(data['Topics'])
-        data['Description'] = json.dumps(data['Description'])
+        data['PodcastName'] = json.dumps(data['PodcastName']).replace("'", "").strip('\"')
+        data['EpisodeName'] = json.dumps(data['EpisodeName']).replace("'", "").strip('\"')
+        data['Description'] = json.dumps(data['Description']).replace("'", "").strip('\"')
+
         conn = pyodbc.connect(self.conn_dmp)
         query = """INSERT INTO 
                     dbo.ContextualCategories 

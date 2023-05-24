@@ -20,9 +20,10 @@ def read_inputs_file(file_name):
     return podcast_input
 
 def debug_get_query(data):
-    data['PodcastName'] = data['PodcastName'].replace("'", "")
-    data['EpisodeName'] = str(json.dumps(data['EpisodeName']))
-    data['Description'] = str(json.dumps(data['Description']))
+    data['PodcastName'] = json.dumps(data['PodcastName']).replace("'", "").strip('\"')
+    data['EpisodeName'] = json.dumps(data['EpisodeName']).replace("'", "").strip('\"')
+    data['Description'] = json.dumps(data['Description']).replace("'", "").strip('\"')
+
     return f'''
     Copy the following
     >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -42,8 +43,12 @@ def debug_get_query(data):
             VALUES 
             ('{data['ShowId']}', '{data['EpisodeId']}', {data['PublisherId']}, {data['AppleContentFormatId']}, {data['IabV2ContentFormatId']},
             'True', '{{}}', '{{}}', 
-            '{data['PodcastName']}', '{data['EpisodeName']}', '{data['Keywords']}',
-            'audio', '{data['ContentUrl']}', '{data['TransLink']}', 
+            '{data['PodcastName']}', 
+            '{data['EpisodeName']}', 
+            '{data['Keywords']}',
+            'audio', 
+            '{data['ContentUrl']}', 
+            '{data['TransLink']}', 
             '{{}}', 
             '{{}}', 
             '{data['Description']}')
