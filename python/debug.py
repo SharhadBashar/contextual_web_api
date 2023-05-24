@@ -20,9 +20,9 @@ def read_inputs_file(file_name):
     return podcast_input
 
 def debug_get_query(data):
-    data['PodcastName'] = json.dumps(data['PodcastName']).replace("'", "").strip('\"')
-    data['EpisodeName'] = json.dumps(data['EpisodeName']).replace("'", "").strip('\"')
-    data['Description'] = json.dumps(data['Description']).replace("'", "").strip('\"')
+    data['PodcastName'] = json.dumps(data['PodcastName']).replace("'", "''").strip('\"')
+    data['EpisodeName'] = json.dumps(data['EpisodeName']).replace("'", "''").strip('\"')
+    data['Description'] = json.dumps(data['Description']).replace("'", "''").strip('\"')
 
     return f'''
     Copy the following
