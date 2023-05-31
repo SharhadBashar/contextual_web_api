@@ -13,9 +13,10 @@ from nltk.stem import WordNetLemmatizer
 from sentence_transformers import SentenceTransformer, util
 
 from constants import *
+from logger import Logger
 
 class Predict_IAB:
-	def __init__(self, text_file, 
+	def __init__(self, text_file, episode_id, show_id,
 	      language = 'english',
 	      ryan_category = None, 
 		  static_data_path = None, 
@@ -27,7 +28,7 @@ class Predict_IAB:
 		self.text_data_path = text_data_path if text_data_path else PATH_DATA_TEXT
 		self.category_path = category_path if category_path else PATH_DATA_CATEGORY
 		self.ryan_category = ryan_category if ryan_category else RYAN_CAT
-		self.model_name = model_name if model_name else IAB_MODELS[0]
+		self.model_name = model_name if model_name else IAB_MODELS[1]
 
 		category_list = pickle.load(open(os.path.join(self.static_data_path, self.ryan_category), 'rb'))
 		if (self.language == 'english'):
@@ -38,7 +39,7 @@ class Predict_IAB:
 		if (self.language != 'english'):
 			recurring_n_words = self.translate_words(recurring_n_words)
 		mapping = self.score_mapping(recurring_n_words, category_list, self.model_name)
-		self.save_mapping(mapping, text_file, self.category_path)
+		self.save_mapping(mapping, text_file, self.category_path, episode_id, show_id, self.language)
 
 	def get_custom_stopwords(self):
 		with open(os.path.join(PATH_STOP_WORDS, 'stop_words_{}.pkl'.format(self.language)), 'rb') as file:
@@ -101,12 +102,12 @@ class Predict_IAB:
 				'id': category_list[idx][0],
 	 		    'data': recurring_n_words[i][0],
 	 		    'table': category_list[idx][1],
-	 		    'score': scores[i].item(),
+	 		    'score': round(scores[i].item(), 4),
 	 		    'count': recurring_n_words[i][1]
 			}
 		return mapping
 
-	def save_mapping(self, mapping, mapping_file, category_path):
+	def save_mapping(self, mapping, mapping_file, category_path, episode_id, show_id, language):
 		with open(os.path.join(category_path, mapping_file), 'wb') as file: 
-			pickle.dump(mapping, file) 
-		print('Category mapping saved at:', os.path.join(category_path, mapping_file))
+			pickle.dump(mapping, file)
+		Logger(200, LOG_TYPE['i'], CAT_SAVE.format(episode_id, os.path.join(category_path, mapping_file)), show_id, episode_id, language)

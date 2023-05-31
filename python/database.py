@@ -6,7 +6,7 @@ from datetime import datetime
 from constants import *
 
 class Database:
-    def __init__(self, env = 'staging'):
+    def __init__(self, env = 'prod'):
         with open(os.path.join(PATH_CONFIG, DB_CONFIG)) as file:
             database_info = json.load(file)
         self.conn_common = self._database_conn(database_info[env], 'common')
@@ -25,11 +25,15 @@ class Database:
         )
     
     def write_category(self, data):
+        data['PodcastName'] = json.dumps(data['PodcastName']).replace("'", "''").strip('\"')
+        data['EpisodeName'] = json.dumps(data['EpisodeName']).replace("'", "''").strip('\"')
+        data['Description'] = json.dumps(data['Description']).replace("'", "''").strip('\"')
+
         conn = pyodbc.connect(self.conn_dmp)
         query = """INSERT INTO 
                     dbo.ContextualCategories 
                     (ShowId, EpisodeId, PublisherId, AppleContentFormatId, IabV2ContentFormatId, 
-                     Active, CreatedAt, UpdatedAt,
+                     Active, CreatedDate, UpdatedDate,
                      PodcastName, EpisodeName, Keywords,
                      ContentType, ContentUrl, TransLink,
                      Topics, TopicsMatch, Description)
@@ -46,16 +50,16 @@ class Database:
                     data['AppleContentFormatId'], 
                     data['IabV2ContentFormatId'], 
                     # data['Active'] -> Always True initially, 
-                    datetime.now(), # CreatedAt
-                    datetime.now(), # UpdatedAt
+                    datetime.now().strftime('%Y-%m-%d %H:%M:%S'), # CreatedDate
+                    datetime.now().strftime('%Y-%m-%d %H:%M:%S'), # UpdatedDate
                     data['PodcastName'],
                     data['EpisodeName'],
                     data['Keywords'],
                     data['ContentType'],
                     data['ContentUrl'],
                     data['TransLink'],
-                    data['Topics'],
-                    data['TopicsMatch'],
+                    str(data['Topics']),
+                    str(data['TopicsMatch']),
                     data['Description']
                 )
         cursor = conn.cursor()
