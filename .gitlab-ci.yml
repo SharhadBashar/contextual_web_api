@@ -20,8 +20,8 @@ job:
     - targetspot
     - stg
   variables:
-    VAULT_TOKEN: $VAULT_TOKEN_STG
-    VAULT_URL: $VAULT_URL_STG
+    VAULT_TOKEN: $VAULT_TOKEN_PRD
+    VAULT_URL: $VAULT_URL_PRD
     SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
     SVC_USER: "ppiq"
     PROJECT_NAME: "contextual_web_api"
