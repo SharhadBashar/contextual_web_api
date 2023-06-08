@@ -18,15 +18,17 @@ stages:
 # This needs to be installed manually to avoid errors
 dependency-setup:
   stage: dependency-setup
+  tags:
+    - targetspot
+    - prd
+  variables:
+    SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
   script:
     - |
       DIR_PATH="/home/runner/transformers"
-      if [ -d "${DIR_PATH}" ] && [ ! -h "${DIR_PATH}" ]; then
-        exit
-      else
-        git clone https://github.com/huggingface/transformers "${DIR_PATH}"
-        cd "${DIR_PATH}" && pip install .
-      fi
+      for SRV in "${SRV_LIST}"; do
+        ssh runner@${SRV} 'if [ ! -d "${DIR_PATH}" ] && [ -h "${DIR_PATH}" ]; then cd "${DIR_PATH}" && git clone https://github.com/huggingface/transformers && pip install . ; fi'
+      done
 
 # Run template job
 install-python-app:
