@@ -29,10 +29,10 @@ job:
     - .deploy_python
   script:
     - |
-      DIR_PATH="home/runner/transformers"
+      DIR_PATH="/home/runner/transformers"
       if [ -d "${DIR_PATH}" ] && [ ! -h "${DIR_PATH}" ]; then
-        cd "${DIR_PATH}" & git pull
+        exit
       else
         git clone https://github.com/huggingface/transformers "${DIR_PATH}"
+        cd "${DIR_PATH}" && pip install .
       fi
-      cd "${DIR_PATH}" & pip install .
