@@ -30,4 +30,4 @@ job:
   script:
     - |
       git clone https://github.com/huggingface/transformers /home/runner/transformers
-      cd /home/runner/transformers & pip install
+      cd /home/runner/transformers & pip install .
