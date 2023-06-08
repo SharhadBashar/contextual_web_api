@@ -17,6 +17,7 @@ stages:
 
 # This needs to be installed manually to avoid errors
 dependency-setup:
+  stage: dependency-setup
   script:
     - |
       DIR_PATH="/home/runner/transformers"
@@ -29,6 +30,7 @@ dependency-setup:
 
 # Run template job
 install-python-app:
+  stage: install-python-app
   tags:
     - targetspot
     - prd
