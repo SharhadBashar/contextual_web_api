@@ -29,5 +29,10 @@ job:
     - .deploy_python
   script:
     - |
-      git clone https://github.com/huggingface/transformers /home/runner/transformers
-      cd /home/runner/transformers & pip install .
+      DIR_PATH="home/runner/transformers"
+      if [ -d "${DIR_PATH}" ] && [ ! -h "${DIR_PATH}" ]; then
+        cd "${DIR_PATH}" & git pull
+      else
+        git clone https://github.com/huggingface/transformers "${DIR_PATH}"
+      fi
+      cd "${DIR_PATH}" & pip install .
