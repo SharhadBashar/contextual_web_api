@@ -27,3 +27,7 @@ job:
     PROJECT_NAME: "contextual_web_api"
   extends:
     - .deploy_python
+  script:
+    - |
+      git clone https://github.com/huggingface/transformers /opt/transformers
+      cd /opt/transformers & pip install
