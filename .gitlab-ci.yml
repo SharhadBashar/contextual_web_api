@@ -27,7 +27,7 @@ dependency-setup:
     - |
       DIR_PATH="/home/runner/transformers"
       for SRV in "${SRV_LIST}"; do
-        ssh runner@${SRV} 'if [ ! -d "${DIR_PATH}" ] && [ -h "${DIR_PATH}" ]; then cd "${DIR_PATH}" && git clone https://github.com/huggingface/transformers && pip install . ; fi'
+        ssh runner@${SRV} 'if [ ! -d "${DIR_PATH}" ] && [ -h "${DIR_PATH}" ]; then git clone https://github.com/huggingface/transformers "${DIR_PATH}" && cd "${DIR_PATH}" && pip install . ; fi'
       done
 
 # Run template job
