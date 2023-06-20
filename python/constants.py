@@ -6,7 +6,7 @@ RECURRING_N = 5
 PATH_DATA = '../data/'
 PATH_MODEL = '../model/'
 PATH_CONFIG = '../config/'
-PATH_LOG = '../log/'
+PATH_LOG = '../logs/internal/'
 PATH_DEBUG = '../debug/'
 
 PATH_DATA_AUDIO = os.path.join(PATH_DATA, 'audio/')
