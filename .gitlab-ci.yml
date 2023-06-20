@@ -5,23 +5,40 @@ workflow:
       when: always
     - when: never
 
-# Pull submodule content
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
-
 # Include template
 include:
   - project: 'infrastructure/gitlab-ci'
     file: '.gitlab-ci.deploy-python.yml'
 
-# Run temaplate job
-job:
+# set job order
+stages:
+  - dependency-setup
+  - install-python-app
+
+# This needs to be installed manually to avoid errors
+dependency-setup:
+  stage: dependency-setup
   tags:
     - targetspot
-    - stg
+    - prd
   variables:
-    VAULT_TOKEN: $VAULT_TOKEN_STG
-    VAULT_URL: $VAULT_URL_STG
+    SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
+  script:
+    - |
+      DIR_PATH="/home/runner/transformers"
+      for SRV in "${SRV_LIST}"; do
+        ssh runner@${SRV} 'if [ ! -d "${DIR_PATH}" ] && [ -h "${DIR_PATH}" ]; then git clone https://github.com/huggingface/transformers "${DIR_PATH}" && cd "${DIR_PATH}" && pip install . ; fi'
+      done
+
+# Run template job
+install-python-app:
+  stage: install-python-app
+  tags:
+    - targetspot
+    - prd
+  variables:
+    VAULT_TOKEN: $VAULT_TOKEN_PRD
+    VAULT_URL: $VAULT_URL_PRD
     SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
     SVC_USER: "ppiq"
     PROJECT_NAME: "contextual_web_api"
