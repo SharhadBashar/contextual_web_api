@@ -26,13 +26,13 @@ dependency-setup:
   script:
     - |
       TRANSFORMERS_PATH="/home/runner/transformers"
-      FFMPEG_URL="https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz"
       for SRV in "${SRV_LIST}"; do
         ssh runner@${SRV} 'if [ ! -d "${TRANSFORMERS_PATH}" ] && [ -h "${TRANSFORMERS_PATH}" ]; then \
           git clone https://github.com/huggingface/transformers "${TRANSFORMERS_PATH}" && \
           cd "${TRANSFORMERS_PATH}" && pip install . ; fi'
         ssh runner@${SRV} 'if [ ! -f /usr/local/bin/ffmpeg ]; then \
-          wget "${FFMPEG_URL}" && tar xvf ffmpeg-release-amd64-static.tar.xz && \
+          wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz && \
+          tar xvf ffmpeg-release-amd64-static.tar.xz && \
           sudo mv ffmpeg-*-amd64-static/ff* /usr/local/bin/ ; fi'
       done
 
