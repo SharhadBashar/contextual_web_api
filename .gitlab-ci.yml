@@ -33,7 +33,7 @@ dependency-setup:
         ssh runner@${SRV} 'if [ ! -f /usr/local/bin/ffmpeg ]; then \
           wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz && \
           tar xvf ffmpeg-release-amd64-static.tar.xz && \
-          mv ffmpeg-*-amd64-static/ff* /usr/local/bin/ ; fi'
+          sudo mv ffmpeg-*-amd64-static/ff* /usr/local/bin/ ; fi'
       done
 
 # Run template job
