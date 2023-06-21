@@ -28,7 +28,7 @@ def download(episode_id, url, show_id, language = 'english'):
         return json_response_message(404, ERROR_DOWNLOAD.format(episode_id, error), show_id, episode_id, language)
     
 def get_apple_cat(apple_cat, show_id, episode_id, language):
-    apple_cat = apple_cat.capitalize()
+    apple_cat = apple_cat.title()
     try:
         file = open(os.path.join(PATH_DATA_STATIC_CATEGORY, APPLE_CAT), 'rb')
         data = dict(pickle.load(file))
