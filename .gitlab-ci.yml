@@ -52,5 +52,6 @@ install-python-app:
     SRV_LIST: "ppiq-cw-api-1.aws.targetspot.com"
     SVC_USER: "ppiq"
     PROJECT_NAME: "contextual_web_api"
+    TRACE: "0"
   extends:
     - .deploy_python
