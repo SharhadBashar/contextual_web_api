@@ -34,6 +34,10 @@ dependency-setup:
           wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz && \
           tar xvf ffmpeg-release-amd64-static.tar.xz && \
           sudo mv ffmpeg-*-amd64-static/ff* /usr/local/bin/ ; fi'
+        ssh runner@${SRV} 'if [ ! -d /home/runner/nltk_data ]; then \
+          mkdir /home/runner/nltk_data && \
+          pip install nltk && \
+          python -m nltk.downloader -d /home/runner/nltk_data/ all ; fi'
       done
 
 # Run template job
