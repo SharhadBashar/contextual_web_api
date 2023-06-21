@@ -9,8 +9,11 @@ class Database:
     def __init__(self, env = 'prod'):
         with open(os.path.join(PATH_CONFIG, DB_CONFIG)) as file:
             database_info = json.load(file)
+        print(database_info)
         self.conn_common = self._database_conn(database_info[env], 'common')
         self.conn_dmp = self._database_conn(database_info[env], 'dmp')
+        print(self.conn_common)
+        print(self.conn_dmp)
         
     def _database_conn(self, database_info, database):
         return 'DRIVER={};\
