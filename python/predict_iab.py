@@ -31,8 +31,7 @@ class Predict_IAB:
 		self.model_name = model_name if model_name else IAB_MODELS[1]
 
 		category_list = pickle.load(open(os.path.join(self.static_data_path, self.ryan_category), 'rb'))
-		if (self.language == 'english'):
-			self.get_custom_stopwords()
+		self.get_custom_stopwords()
 		text = self.clean_text(pickle.load(open(os.path.join(self.text_data_path, text_file), 'rb')))
 
 		recurring_n_words = self.get_recurring_n(text, n = RECURRING_N)
@@ -59,8 +58,7 @@ class Predict_IAB:
 						   punct = True
 					)
 		text = ' '.join([word for word in text.split() if word not in (stop)])
-		if (self.language == 'english'):
-			text = ' '.join([word for word in text.split() if word not in (self.custom_stopwords)])
+		text = ' '.join([word for word in text.split() if word not in (self.custom_stopwords)])
 		text = ' '.join([lemmatizer.lemmatize(word) for word in text.split()])
 		return text
 

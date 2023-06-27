@@ -187,7 +187,7 @@ async def categorize_podcast(podcast: Podcast):
     db_data['Topics'] = topics
     db_data['TopicsMatch'] = topics_match
     db_data['Description'] = podcast.description if podcast.description else ''
-
+    print(db_data)
     try:
         db.write_category(db_data)
     except Exception as error:
