@@ -7,10 +7,10 @@ from fastapi import FastAPI, status
 from s3 import S3
 from constants import *
 from logger import Logger
-from att import Audio_To_Text_EN, Audio_To_Text_FR
 from database import Database
 from predict_iab import Predict_IAB
 from predict_apple import Predict_Apple
+from att import Audio_To_Text_EN, Audio_To_Text_FR
 from helper import download, get_apple_cat, get_iab_cat, load_topics, del_files, json_response_message
 
 class Podcast(BaseModel):
@@ -72,6 +72,9 @@ async def get_log():
 async def categorize_podcast(podcast: Podcast):
     language = 'english'
     Logger(200, LOG_TYPE['i'], PODCAST_REQUEST.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
+    
+    if (db.get_podcast(podcast.publisher_id, podcast.show_id, podcast.episode_id) > 0):
+        return json_response_message(200, DUPLICATE_PODCAST.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
 
     if (podcast.podcast_name is None or podcast.podcast_name == ''):
         return json_response_message(404, ERROR_PODCAST_NAME.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
@@ -137,6 +140,9 @@ async def categorize_podcast(podcast: Podcast):
 async def categorize_podcast(podcast: Podcast):
     language = 'french'
     Logger(200, LOG_TYPE['i'], PODCAST_REQUEST.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
+    
+    if (db.get_podcast(podcast.publisher_id, podcast.show_id, podcast.episode_id) > 0):
+        return json_response_message(200, DUPLICATE_PODCAST.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
 
     if (podcast.podcast_name is None or podcast.podcast_name == ''):
         return json_response_message(404, ERROR_PODCAST_NAME.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)

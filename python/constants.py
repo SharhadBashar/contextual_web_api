@@ -116,6 +116,7 @@ CAT_SAVE = '[Podcast {}] Category mapping successfully saved at {}'
 DATA_WRITE = '[Podcast {}] DB write successful'
 DATA_DELETE = '[Podcast {}] Deleted successfully'
 FILE_UPDATE = '[File {}] Updated successfully'
+DUPLICATE_PODCAST = '[Podcast {}] Already categorized and in Database'
 
 # Error Messages
 ERROR_START_UP = 'Startup Error with {}. Full Error Traceback: {}'

@@ -24,6 +24,18 @@ class Database:
             database_info['username'], database_info['password']
         )
     
+    def get_podcast(self, publisher_id, show_id, episode_id):
+        conn = pyodbc.connect(self.conn_dmp)
+        query = """SELECT COUNT(Id)
+                   FROM dbo.ContextualCategories
+                   WHERE PublisherId = {} AND ShowId = '{}' AND EpisodeId = '{}'
+                """.format(publisher_id, show_id, episode_id)
+        cursor = conn.cursor()
+        cursor.execute(query)
+        count = cursor.fetchone()[0]
+        cursor.close()
+        return count     
+
     def write_category(self, data):
         data['PodcastName'] = json.dumps(data['PodcastName']).replace("'", "''").strip('\"')
         data['EpisodeName'] = json.dumps(data['EpisodeName']).replace("'", "''").strip('\"')
