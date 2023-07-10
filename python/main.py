@@ -75,6 +75,11 @@ async def categorize_podcast(podcast: Podcast):
     
     if (db.get_podcast(podcast.publisher_id, podcast.show_id, podcast.episode_id) > 0):
         return json_response_message(200, DUPLICATE_PODCAST.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
+    
+    # try:
+    #     att_en = Audio_To_Text_EN()
+    # except Exception as error:
+    #     Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Audio To Text: English', error))
 
     if (podcast.podcast_name is None or podcast.podcast_name == ''):
         return json_response_message(404, ERROR_PODCAST_NAME.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
@@ -143,6 +148,11 @@ async def categorize_podcast(podcast: Podcast):
     
     if (db.get_podcast(podcast.publisher_id, podcast.show_id, podcast.episode_id) > 0):
         return json_response_message(200, DUPLICATE_PODCAST.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
+    
+    # try:
+    #     att_fr = Audio_To_Text_FR()
+    # except Exception as error:
+    #     Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Audio To Text: French', error))
 
     if (podcast.podcast_name is None or podcast.podcast_name == ''):
         return json_response_message(404, ERROR_PODCAST_NAME.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
@@ -193,7 +203,7 @@ async def categorize_podcast(podcast: Podcast):
     db_data['Topics'] = topics
     db_data['TopicsMatch'] = topics_match
     db_data['Description'] = podcast.description if podcast.description else ''
-    print(db_data)
+
     try:
         db.write_category(db_data)
     except Exception as error:

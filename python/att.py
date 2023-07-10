@@ -1,5 +1,5 @@
 import os
-import time
+import torch
 import pickle
 import whisper
 
@@ -19,7 +19,9 @@ class Audio_To_Text_EN:
 		if (model_type not in WHISPER_MODEL_TYPES):
 			return json_response_message(422, ERROR_WHISPER_MODEL.format(model_type), language = 'english')
 		
-		self.model = whisper.load_model(model_type)
+		DEVICE = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+
+		self.model = whisper.load_model(model_type, device = DEVICE)
 
 	def transcribe(self, audio_file, show_id, episode_id, language = 'english'):
 		try:

@@ -4,7 +4,7 @@ from cleantext import clean
 
 import nltk
 from nltk.corpus import stopwords
-nltk.download("stopwords")
+nltk.download('stopwords')
 from nltk.stem import WordNetLemmatizer
 
 from constants import *
@@ -36,7 +36,7 @@ class Predict_Apple:
             return json_response_message(422, ERROR_CLEAN_DATA.format(episode_id), show_id, episode_id, language)
         return data
     
-    def predict(self, inp, data, show_id, episode_id, language = 'english'):
+    def predict(self, inp, show_id, episode_id, language = 'english'):
         try:
             return self.category_dict[self.model.predict([inp])[0]]
         except Exception as error:
