@@ -19,7 +19,7 @@ class Audio_To_Text_EN:
 		if (model_type not in WHISPER_MODEL_TYPES):
 			return json_response_message(422, ERROR_WHISPER_MODEL.format(model_type), language = 'english')
 		
-		DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+		DEVICE = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 		Logger(201, LOG_TYPE['i'], DEVICE_USEAGE.format(DEVICE), language = self.language)
 		self.model = whisper.load_model(model_type, device = DEVICE)
 
