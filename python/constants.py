@@ -117,6 +117,7 @@ DATA_WRITE = '[Podcast {}] DB write successful'
 DATA_DELETE = '[Podcast {}] Deleted successfully'
 FILE_UPDATE = '[File {}] Updated successfully'
 DUPLICATE_PODCAST = '[Podcast {}] Already categorized and in Database'
+DEVICE_USEAGE = 'Transcribed using {}'
 
 # Error Messages
 ERROR_START_UP = 'Startup Error with {}. Full Error Traceback: {}'

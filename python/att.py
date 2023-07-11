@@ -20,7 +20,7 @@ class Audio_To_Text_EN:
 			return json_response_message(422, ERROR_WHISPER_MODEL.format(model_type), language = 'english')
 		
 		DEVICE = 'cuda:0' if torch.cuda.is_available() else 'cpu'
-
+		Logger(201, LOG_TYPE['i'], DEVICE_USEAGE.format(DEVICE), language = self.language)
 		self.model = whisper.load_model(model_type, device = DEVICE)
 
 	def transcribe(self, audio_file, show_id, episode_id, language = 'english'):

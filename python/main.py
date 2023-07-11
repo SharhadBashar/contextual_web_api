@@ -40,27 +40,27 @@ try:
 except Exception as error:
     Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Predicting Apple Categories', error))
 
-try:
-    att_en = Audio_To_Text_EN()
-except Exception as error:
-    Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Audio To Text: English', error))
-try:
-    att_fr = Audio_To_Text_FR()
-except Exception as error:
-    Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Audio To Text: French', error))
+# try:
+#     att_en = Audio_To_Text_EN()
+# except Exception as error:
+#     Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Audio To Text: English', error))
+# try:
+#     att_fr = Audio_To_Text_FR()
+# except Exception as error:
+#     Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Audio To Text: French', error))
 
 app = FastAPI()
 
 @app.get('/status', status_code = status.HTTP_200_OK)
-async def status_check():
+def status_check():
     return json_response_message(200, API_RUNNING)
 
 @app.get('/welcome', status_code = status.HTTP_200_OK)
-async def intro():
+def intro():
     return WELCOME
 
 @app.get('/log', status_code = status.HTTP_200_OK)
-async def get_log():
+def get_log():
     json_list = []
     with open(os.path.join(PATH_LOG, LOG_FILENAME)) as file:
         for json_obj in file:
@@ -69,17 +69,17 @@ async def get_log():
     return json_list
 
 @app.post('/categorize/english', status_code = status.HTTP_201_CREATED)
-async def categorize_podcast(podcast: Podcast):
+def categorize_podcast(podcast: Podcast):
     language = 'english'
     Logger(200, LOG_TYPE['i'], PODCAST_REQUEST.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
     
     if (db.get_podcast(podcast.publisher_id, podcast.show_id, podcast.episode_id) > 0):
         return json_response_message(200, DUPLICATE_PODCAST.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
     
-    # try:
-    #     att_en = Audio_To_Text_EN()
-    # except Exception as error:
-    #     Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Audio To Text: English', error))
+    try:
+        att_en = Audio_To_Text_EN()
+    except Exception as error:
+        Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Audio To Text: English', error))
 
     if (podcast.podcast_name is None or podcast.podcast_name == ''):
         return json_response_message(404, ERROR_PODCAST_NAME.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
@@ -142,17 +142,17 @@ async def categorize_podcast(podcast: Podcast):
     return json_response_message(201, API_SUCCESS.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
 
 @app.post('/categorize/french', status_code = status.HTTP_201_CREATED)
-async def categorize_podcast(podcast: Podcast):
+def categorize_podcast(podcast: Podcast):
     language = 'french'
     Logger(200, LOG_TYPE['i'], PODCAST_REQUEST.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
     
     if (db.get_podcast(podcast.publisher_id, podcast.show_id, podcast.episode_id) > 0):
         return json_response_message(200, DUPLICATE_PODCAST.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
     
-    # try:
-    #     att_fr = Audio_To_Text_FR()
-    # except Exception as error:
-    #     Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Audio To Text: French', error))
+    try:
+        att_fr = Audio_To_Text_FR()
+    except Exception as error:
+        Logger(400, LOG_TYPE['e'], ERROR_START_UP.format('Audio To Text: French', error))
 
     if (podcast.podcast_name is None or podcast.podcast_name == ''):
         return json_response_message(404, ERROR_PODCAST_NAME.format(podcast.episode_id), podcast.show_id, podcast.episode_id, language)
